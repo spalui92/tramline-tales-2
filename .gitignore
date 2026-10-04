@@ -1,2 +1,5 @@
+node_modules/
+dist/
+.astro/
 _site/
-_preview.html
+__pycache__/

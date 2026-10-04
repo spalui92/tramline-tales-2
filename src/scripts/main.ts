@@ -1,0 +1,349 @@
+// Everything that moves on the site. One clock (GSAP's ticker) drives smooth
+// scrolling, scroll-linked animation, the cursor and the marquee, so they never
+// drift apart. With "reduce motion" switched on, none of the decoration runs:
+// the page simply appears, already in place.
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
+import Lenis from 'lenis';
+import { initRiver } from './river';
+
+gsap.registerPlugin(ScrollTrigger, SplitText);
+(window as any).__tt = true;
+
+const root = document.documentElement;
+const motion = root.classList.contains('motion');
+const $ = <T extends Element = HTMLElement>(s: string, p: ParentNode = document) => p.querySelector<T>(s);
+const $$ = <T extends Element = HTMLElement>(s: string, p: ParentNode = document) => Array.from(p.querySelectorAll<T>(s));
+const pad = (n: number, l = 2) => String(Math.round(n)).padStart(l, '0');
+
+/* ---------- smooth scroll ---------- */
+let lenis: Lenis | null = null;
+if (motion) {
+  lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1 });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((t) => lenis!.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+}
+function scrollToY(target: number | HTMLElement) {
+  const offset = -(parseInt(getComputedStyle(root).getPropertyValue('--header-h')) || 64);
+  if (lenis) lenis.scrollTo(target, { offset: typeof target === 'number' ? 0 : offset, duration: 1.6 });
+  else {
+    const y = typeof target === 'number' ? target : target.getBoundingClientRect().top + scrollY + offset;
+    scrollTo({ top: y, behavior: 'auto' });
+  }
+}
+
+/* ---------- header: hides going down, returns going up ---------- */
+{
+  const header = $('.site-header');
+  let last = scrollY;
+  addEventListener('scroll', () => {
+    const y = scrollY;
+    if (header) header.classList.toggle('is-hidden', y > last && y > 160);
+    last = y;
+  }, { passive: true });
+}
+
+/* ---------- the time in Howrah ---------- */
+{
+  const el = $('[data-clock]');
+  if (el) {
+    const place = el.textContent?.trim() || 'Howrah';
+    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false });
+    const tick = () => { el.textContent = `${place} ${fmt.format(new Date())} IST`; };
+    tick(); setInterval(tick, 15000);
+  }
+}
+
+/* ---------- same-page anchors and the rickshaw back to the top ---------- */
+document.addEventListener('click', (e) => {
+  const a = (e.target as Element).closest<HTMLAnchorElement>('a[href*="#"]');
+  if (a && a.pathname === location.pathname && a.hash) {
+    const t = document.getElementById(a.hash.slice(1));
+    if (t) { e.preventDefault(); scrollToY(t); history.replaceState(null, '', a.hash); }
+  }
+  if ((e.target as Element).closest('[data-to-top]')) scrollToY(0);
+});
+
+/* ---------- page wipe: a panel in the next tale's colour ---------- */
+const wipe = $('.wipe')!;
+const wipeTitle = $('[data-wipe-title]')!;
+
+function arrive(): Promise<void> {
+  if (!root.classList.contains('arriving')) return Promise.resolve();
+  let title = '';
+  try { title = JSON.parse(sessionStorage.getItem('tt-wipe') || '{}').t || ''; sessionStorage.removeItem('tt-wipe'); } catch {}
+  wipeTitle.textContent = title;
+  return new Promise((resolve) => {
+    gsap.timeline({ delay: 0.25, onComplete: () => { root.classList.remove('arriving'); gsap.set(wipe, { clearProps: 'all' }); } })
+      .to(wipe, { yPercent: -100, duration: 1, ease: 'expo.inOut' })
+      .add(() => resolve(), 0.35);
+  });
+}
+
+if (motion) {
+  document.addEventListener('click', (e) => {
+    const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-wipe]');
+    if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0 || a.target === '_blank') return;
+    e.preventDefault();
+    const c = a.dataset.wipe!, t = a.dataset.wipeTo || '';
+    try { sessionStorage.setItem('tt-wipe', JSON.stringify({ c, t })); } catch {}
+    wipe.style.setProperty('--wipe', c);
+    wipeTitle.textContent = t;
+    gsap.fromTo(wipe, { yPercent: 100, visibility: 'visible' }, {
+      yPercent: 0, duration: 0.8, ease: 'expo.inOut', onComplete: () => { location.href = a.href; },
+    });
+    gsap.fromTo($('.stop', wipe), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, delay: 0.35, ease: 'expo.out' });
+  });
+  // coming back with the browser's back button: lift the panel again
+  addEventListener('pageshow', (e) => { if (e.persisted) { gsap.set(wipe, { clearProps: 'all' }); root.classList.remove('arriving'); } });
+}
+
+/* ---------- first visit: a tram ticket, punched ---------- */
+function boardTicket(): Promise<void> {
+  const loader = $('.loader');
+  if (!loader || !root.classList.contains('first-visit')) { loader?.remove(); return Promise.resolve(); }
+  try { sessionStorage.setItem('tt-boarded', '1'); } catch {}
+  const ticket = $('.ticket', loader)!, count = $('[data-count]', loader)!, punch = $('.punch', loader)!;
+  const total = Number(count.dataset.total || 0), n = { v: 0 };
+  return new Promise((resolve) => {
+    const tl = gsap.timeline({ onComplete: () => { loader.remove(); root.classList.remove('first-visit'); } });
+    tl.from(ticket, { yPercent: 50, rotate: -8, opacity: 0, duration: 0.9, ease: 'expo.out' })
+      .to(n, { v: total, duration: 0.9, ease: 'power2.out', onUpdate: () => { count.textContent = pad(n.v, 3); } }, '-=0.3')
+      .to(punch, { scale: 1, duration: 0.25, ease: 'back.out(3)' }, '+=0.1')
+      .to(ticket, { yPercent: -40, rotate: 5, opacity: 0, duration: 0.6, ease: 'power3.in' }, '+=0.3')
+      .to(loader, { clipPath: 'inset(0% 0% 100% 0%)', duration: 1, ease: 'expo.inOut' }, '-=0.25')
+      .add(() => resolve(), '-=0.7');
+    loader.addEventListener('click', () => tl.timeScale(4));
+  });
+}
+
+/* ---------- reveals ---------- */
+function reveals() {
+  if (!motion) {
+    gsap.set('[data-reveal]', { opacity: 1 });
+    gsap.set('[data-split], [data-hero-line]', { visibility: 'visible' });
+    gsap.set('[data-draw] path', { strokeDashoffset: 0 });
+    return;
+  }
+  // text that rises line by line from behind a mask
+  $$('[data-split]').forEach((el) => {
+    SplitText.create(el, {
+      type: 'lines', mask: 'lines', autoSplit: true,
+      onSplit(self) {
+        gsap.set(el, { visibility: 'visible' });
+        return gsap.from(self.lines, { yPercent: 110, duration: 1.3, ease: 'expo.out', stagger: 0.09, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+      },
+    });
+  });
+  // everything else: a quiet rise and fade
+  $$('[data-reveal]').forEach((el) => {
+    if (el.closest('.hero')) return;
+    gsap.fromTo(el, { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+  });
+}
+
+/* ---------- home ---------- */
+function hero() {
+  const hero = $('.hero');
+  if (!hero) return;
+  const canvas = $<HTMLCanvasElement>('[data-river]', hero);
+  if (canvas) initRiver(canvas, hero, motion);
+  if (!motion) return;
+
+  const tl = gsap.timeline();
+  $$('[data-hero-line]', hero).forEach((line, i) => {
+    const split = SplitText.create(line, { type: 'chars', mask: 'chars' });
+    gsap.set(line, { visibility: 'visible' });
+    tl.from(split.chars, { yPercent: 115, duration: 1.4, ease: 'expo.out', stagger: 0.045 }, i * 0.18);
+  });
+  const draw = $$('[data-draw] path', hero);
+  tl.to(draw, { strokeDashoffset: 0, duration: 2.6, ease: 'power2.inOut', stagger: 0.12 }, 0.1);
+  tl.from($$('.bridge .lamp', hero), { opacity: 0, duration: 0.4, stagger: { each: 0.03, from: 'center' } }, 1.4);
+  tl.fromTo($$('[data-reveal]', hero), { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 1.2, ease: 'expo.out', stagger: 0.1 }, 0.6);
+
+  // on the way out, the title lifts away and the bridge settles into the river haze
+  gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
+    .to('.hero-title', { yPercent: -28, opacity: 0.15, ease: 'none' }, 0)
+    .to('.hero .bridge:not(.mirror)', { yPercent: 12, scale: 1.08, ease: 'none' }, 0)
+    .to('.hero-foot', { yPercent: -60, opacity: 0, ease: 'none' }, 0);
+}
+
+function manifesto() {
+  const p = $('[data-words]');
+  if (!p || !motion) return;
+  gsap.to($$('.w', p), { opacity: 1, ease: 'none', stagger: 0.1, scrollTrigger: { trigger: p, start: 'top 80%', end: 'bottom 50%', scrub: true } });
+}
+
+function taleList() {
+  const peek = $('[data-peek]');
+  const list = $('.tale-list');
+  if (!peek || !list || !motion || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const xTo = gsap.quickTo(peek, 'x', { duration: 0.9, ease: 'expo.out' });
+  const yTo = gsap.quickTo(peek, 'y', { duration: 0.9, ease: 'expo.out' });
+  const imgs = $$('[data-peek-img]', peek);
+  list.addEventListener('mousemove', (e) => { xTo(e.clientX + 40); yTo(e.clientY - peek.offsetHeight / 2); });
+  $$('.tale-row', list).forEach((row) => {
+    row.addEventListener('mouseenter', () => {
+      imgs.forEach((im) => im.classList.toggle('on', im.dataset.peekImg === row.dataset.row));
+      gsap.to(peek, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.7, ease: 'expo.out' });
+    });
+  });
+  list.addEventListener('mouseleave', () => gsap.to(peek, { clipPath: 'inset(50% 50% 50% 50%)', duration: 0.5, ease: 'expo.out' }));
+}
+
+function postcards() {
+  const section = $('[data-postcards]');
+  const track = $('[data-pc-track]');
+  if (!section || !track || !motion) return;
+  const mm = gsap.matchMedia();
+  mm.add('(min-width: 900px)', () => {
+    const dist = () => Math.max(0, track.scrollWidth - innerWidth);
+    const slide = gsap.to(track, {
+      x: () => -dist(), ease: 'none',
+      scrollTrigger: { trigger: section, start: 'top top', end: () => '+=' + dist(), pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1 },
+    });
+    // each postcard sways a little as it passes, like it is pinned to a moving board
+    $$('.pc .card', track).forEach((card) => {
+      gsap.fromTo(card, { y: 24, rotate: '+=3' }, {
+        y: -12, rotate: '-=3', ease: 'none',
+        scrollTrigger: { trigger: card, containerAnimation: slide, start: 'left right', end: 'right left', scrub: true },
+      });
+    });
+  });
+}
+
+function board() {
+  const boardEl = $('[data-board]');
+  if (!boardEl || !motion) return;
+  const track = $('.track', boardEl)!;
+  const seq = $('.seq', boardEl)!;
+  let x = 0, dir = 1, visible = false;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(boardEl);
+  gsap.ticker.add((_, dt) => {
+    if (!visible) return;
+    const v = lenis ? lenis.velocity : 0;
+    if (Math.abs(v) > 0.5) dir = v > 0 ? 1 : -1;
+    x -= dir * (0.05 + Math.min(Math.abs(v) * 0.02, 0.9)) * dt;
+    const w = seq.offsetWidth;
+    if (x <= -w) x += w;
+    if (x > 0) x -= w;
+    track.style.transform = `translate3d(${x}px,0,0)`;
+  });
+}
+
+function wordmark() {
+  const el = $('[data-wordmark]');
+  if (!el) return;
+  const fit = () => {
+    el.style.fontSize = '';
+    const fs = parseFloat(getComputedStyle(el).fontSize);
+    el.style.fontSize = (fs * (el.parentElement!.clientWidth * 1.0) / el.scrollWidth) + 'px';
+  };
+  document.fonts.ready.then(() => { fit(); ScrollTrigger.refresh(); });
+  addEventListener('resize', fit);
+  if (motion) gsap.from(el, { yPercent: 45, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom bottom', scrub: true } });
+}
+
+/* ---------- a tale ---------- */
+function tale() {
+  const article = $('.tale');
+  if (!article) return;
+  // tram on the overhead wire = how far you have read
+  const fill = $('.wire .fill'), tram = $('.wire .tram');
+  if (fill && tram) {
+    const prose = $('[data-prose]')!;
+    ScrollTrigger.create({
+      trigger: prose, start: 'top 60%', end: 'bottom bottom',
+      onUpdate: (self) => {
+        fill.style.transform = `scaleX(${self.progress})`;
+        tram.style.transform = `translateX(calc(${self.progress} * (100vw - 46px) + 0px))`;
+      },
+    });
+  }
+
+  const big = $('[data-bignum]');
+  if (big && motion) {
+    gsap.from(big, { yPercent: 30, opacity: 0, duration: 1.8, ease: 'expo.out', delay: 0.3 });
+    gsap.to(big, { yPercent: -25, ease: 'none', scrollTrigger: { trigger: '.tale-hero', start: 'top top', end: 'bottom top', scrub: true } });
+  }
+
+  if (motion) {
+    $$('[data-postcard]').forEach((fig) => {
+      const box = $('[data-clip]', fig)!, img = $('img', box)!, card = $('.card', fig)!;
+      gsap.timeline({ scrollTrigger: { trigger: fig, start: 'top 85%', once: true } })
+        .fromTo(box, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.out' }, 0)
+        .fromTo(card, { y: 80, rotate: 0 }, { y: 0, rotate: getComputedStyle(fig).getPropertyValue('--r') || 0, duration: 1.4, ease: 'expo.out' }, 0)
+        .fromTo(img, { scale: 1.3 }, { scale: 1.08, duration: 1.8, ease: 'expo.out' }, 0);
+      gsap.fromTo(img, { yPercent: -3 }, { yPercent: 3, ease: 'none', scrollTrigger: { trigger: fig, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+
+    const stamp = $('[data-stamp]');
+    if (stamp) {
+      gsap.set(stamp, { opacity: 0 });
+      ScrollTrigger.create({
+        trigger: stamp, start: 'top 85%', once: true,
+        onEnter: () => {
+          gsap.timeline()
+            .fromTo(stamp, { scale: 2.6, opacity: 0, rotate: -34 }, { scale: 1, opacity: 0.85, rotate: -14, duration: 0.42, ease: 'back.out(2.2)' })
+            .fromTo('.signoff', { x: -4 }, { x: 0, duration: 0.3, ease: 'elastic.out(1, 0.3)' }, 0.32);
+        },
+      });
+    }
+  }
+
+  const copy = $<HTMLButtonElement>('[data-copy]');
+  copy?.addEventListener('click', async () => {
+    const was = copy.textContent;
+    try { await navigator.clipboard.writeText(copy.dataset.copy!); copy.textContent = 'Copied. Kindly paste.'; }
+    catch { copy.textContent = copy.dataset.copy!; }
+    setTimeout(() => { copy.textContent = was; }, 2400);
+  });
+  const share = $<HTMLButtonElement>('[data-share]');
+  if (share && navigator.share) {
+    share.hidden = false;
+    share.addEventListener('click', () => navigator.share({ title: share.dataset.title, url: share.dataset.url }).catch(() => {}));
+  }
+}
+
+/* ---------- the cursor ---------- */
+function cursor() {
+  const c = $('.cursor');
+  if (!c || !motion || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const label = $('.label', c)!;
+  const xTo = gsap.quickTo(c, 'x', { duration: 0.45, ease: 'power3' });
+  const yTo = gsap.quickTo(c, 'y', { duration: 0.45, ease: 'power3' });
+  gsap.set(c, { x: innerWidth / 2, y: innerHeight / 2 });
+  addEventListener('mousemove', (e) => { xTo(e.clientX); yTo(e.clientY); }, { passive: true });
+  let current: Element | null = null;
+  document.addEventListener('mouseover', (e) => {
+    const t = (e.target as Element).closest<HTMLElement>('[data-cursor]');
+    if (t === current) return;
+    current = t;
+    c.classList.remove('is-link', 'is-label');
+    if (!t) return;
+    const v = t.dataset.cursor!;
+    const tint = getComputedStyle(t).getPropertyValue('--c').trim();
+    c.style.setProperty('--accent', tint || '');
+    if (v === 'link') c.classList.add('is-link');
+    else { label.textContent = v; c.classList.add('is-label'); }
+  });
+  document.addEventListener('mouseleave', () => gsap.to(c, { opacity: 0, duration: 0.2 }));
+  document.addEventListener('mouseenter', () => gsap.to(c, { opacity: 1, duration: 0.2 }));
+}
+
+/* ---------- start ---------- */
+cursor();
+tale();
+taleList();
+wordmark();
+board();
+const ready = boardTicket().then(arrive);
+ready.then(() => {
+  hero();
+  reveals();
+  manifesto();
+  postcards();
+  ScrollTrigger.refresh();
+});

@@ -1,0 +1,137 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Bridge from '../components/Bridge.astro';
+import Icon from '../components/Icon.astro';
+import { cfg, tales, newestFirst, allPhotos, href, absolute, longDate, shortDate, pad, chai } from '../lib/site';
+
+const latest = newestFirst[0];
+const mottoEm = new Set(['old', 'tracks,', 'window', 'seat,']);
+const mottoWords = cfg.motto.join(' ').split(' ');
+const stops = ['Howrah', 'Esplanade', 'College Street', 'Shyambazar', 'Gariahat', 'Ballygunge', 'Kalighat', 'Tollygunge'];
+const tilt = (i: number) => (((i * 37) % 7) - 3) * 0.7;
+const fit = (w: number, list: number[]) => { const ok = list.filter((x) => x <= w); return ok.length ? ok : [w]; };
+
+const jsonld = {
+  '@context': 'https://schema.org', '@type': 'Blog', name: cfg.name, description: cfg.description,
+  url: absolute(), author: { '@type': 'Person', name: cfg.author },
+  blogPost: tales.map((t) => ({ '@type': 'BlogPosting', headline: t.title, datePublished: t.date, description: t.summary, url: absolute(`tales/${t.slug}/`), author: { '@type': 'Person', name: cfg.author } })),
+};
+---
+<Base page="home" jsonld={jsonld}>
+  <!-- HERO: the Hooghly at night, Howrah Bridge drawing itself across it -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="river-fallback" aria-hidden="true"></div>
+    <canvas class="river" aria-hidden="true" data-river></canvas>
+    <Bridge class="bridge" />
+    <Bridge class="bridge mirror" mirror />
+    <div class="hero-inner">
+      <div class="hero-kicker mono" data-reveal>
+        <span>Essays · Marketing · Brands · Media</span>
+        <span>Est. {shortDate(cfg.start)} · {cfg.stampPlace}</span>
+      </div>
+      <h1 class="hero-title" id="hero-title">
+        <span class="l1" data-hero-line>Tramline</span>
+        <span class="l2" data-hero-line>Tales</span>
+        <span class="bn" lang="bn" data-reveal>ট্রামলাইনের গল্প · Old tracks, new thoughts.</span>
+      </h1>
+      <div class="hero-foot">
+        <p class="hero-intro" data-reveal>Essays on marketing, brands and media, by {cfg.author}. Written from {cfg.stampPlace}, new every {cfg.days.slice(0, -1).join(', ')} and {cfg.days.at(-1)}.</p>
+        <a class="hero-latest" href={href(`tales/${latest.slug}/`)} data-reveal data-cursor="Read" data-wipe={latest.colour} data-wipe-to={latest.title} style={`--c:${latest.colour}`}>
+          <span class="mono" style="color:var(--c)">Latest · Tale No. {pad(latest.no)}</span>
+          <span class="t">{latest.title}</span>
+          <span class="board-cue mono"><i aria-hidden="true"></i>Board here</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO: the diary's motto, read word by word as you scroll -->
+  <section class="section wrap" aria-label="Motto">
+    <div class="eyebrow mono">Kindly note</div>
+    <div class="manifesto">
+      <p data-words>{mottoWords.map((w) => mottoEm.has(w) ? <><em class="w">{w}</em>{' '}</> : <><span class="w">{w}</span>{' '}</>)}</p>
+      <div class="sig mono"><Icon name="chai" />Served with kadak chai, three times a week</div>
+    </div>
+  </section>
+
+  <!-- THE TALES -->
+  <section class="section wrap" id="tales" aria-labelledby="tales-title" style="padding-top:0">
+    <div class="tales-head">
+      <h2 id="tales-title" data-split>All tales<sup>({pad(tales.length)})</sup></h2>
+      <span class="mono" style="color:var(--muted)">Newest first</span>
+    </div>
+    <ol class="tale-list" reversed>
+      {newestFirst.map((t) => (
+        <li class="tale-row" style={`--c:${t.colour}`} data-row={t.slug} data-reveal>
+          <a href={href(`tales/${t.slug}/`)} data-cursor="Read" data-wipe={t.colour} data-wipe-to={t.title}>
+            {t.cover && (
+              <span class="thumb"><Image src={t.cover.image} alt="" widths={fit(t.cover.image.width, [480, 900])} sizes="100vw" loading="lazy" /></span>
+            )}
+            <span class="no mono">No. {pad(t.no)}</span>
+            <span class="t">{t.title}</span>
+            <span class="tag mono">{t.tag} · {t.minutes} min</span>
+            <span class="d mono"><time datetime={t.date}>{shortDate(t.date)}</time></span>
+            <span class="sum">{t.summary}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+    <div class="peek" aria-hidden="true" data-peek>
+      {newestFirst.map((t) => t.cover && (
+        <Image src={t.cover.image} alt="" data-peek-img={t.slug} widths={fit(t.cover.image.width, [400, 700])} sizes="340px" loading="lazy" />
+      ))}
+    </div>
+  </section>
+
+  <!-- POSTCARDS FROM THE LINE: every photograph, pinned and scrolled sideways -->
+  <section class="section postcards" aria-labelledby="pc-title" data-postcards>
+    <div class="wrap pc-head">
+      <h2 id="pc-title" data-split>Postcards from <em>the line</em></h2>
+      <p>Every picture that has ridden along so far, {allPhotos.length} of them. Each one stops at its own tale.</p>
+    </div>
+    <div class="pc-viewport">
+      <ul class="pc-track" role="list" data-pc-track>
+        {allPhotos.map((p, i) => (
+          <li class="pc" style={`--c:${p.tale.colour};--r:${tilt(i)}deg`}>
+            <a href={href(`tales/${p.tale.slug}/`)} data-cursor="Read" data-wipe={p.tale.colour} data-wipe-to={p.tale.title}>
+              <div class="card">
+                <div class="img"><Image src={p.image} alt={p.caption} widths={fit(p.image.width, [420, 800])} sizes="(max-width: 899px) 78vw, 26vw" loading="lazy" /></div>
+                <div class="cap">{p.caption}</div>
+              </div>
+              <div class="from mono"><b>No. {pad(p.tale.no)}</b><span>{p.tale.title.length > 34 ? p.tale.title.slice(0, 32).replace(/\s+\S*$/, '') + '…' : p.tale.title}</span></div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- DESTINATION BOARD -->
+  <div class="board" aria-hidden="true" data-board>
+    <div class="track">
+      {[0, 1].map(() => (
+        <div class="seq">
+          {stops.map((s, i) => (<><span class={i === 0 ? 'stop hl' : 'stop'}>{s}</span><Icon name="tram" /></>))}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="section wrap about" id="about" aria-labelledby="about-title">
+    <div>
+      <div class="eyebrow mono">About the diary</div>
+      <h2 id="about-title" data-split>A notebook that rattles through the city of <em>brands.</em></h2>
+    </div>
+    <div class="copy" data-reveal>
+      <p>{cfg.name} is where {cfg.author} writes about marketing, brands, media and the way we talk to one another, from {cfg.place}.</p>
+      <p>Every tale starts with something you have already seen: a ketchup bottle, a tram, a television soap. Then it asks what that thing is really selling, and to whom. Kindly take a window seat.</p>
+      <div class="facts mono">
+        <div><b>{pad(tales.length)}</b><span>Tales so far</span></div>
+        <div><b>{allPhotos.length}</b><span>Postcards</span></div>
+        <div><b>{cfg.days.map((d) => d.slice(0, 3)).join(' · ')}</b><span>Timetable</span></div>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,42 @@
+---
+import Icon from './Icon.astro';
+import { cfg, href, newestFirst, pad } from '../lib/site';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="laalpaar" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <p class="lead">Old tracks, <em>new thoughts.</em></p>
+        <p style="margin-top:28px"><button class="to-top mono" type="button" data-to-top data-cursor="link"><Icon name="rickshaw" />Pull back to the top</button></p>
+      </div>
+      <div>
+        <h3 class="mono">The tales</h3>
+        <ul>
+          {newestFirst.map((t) => (
+            <li><a class="ulink" href={href(`tales/${t.slug}/`)} data-cursor="link" data-wipe={t.colour} data-wipe-to={t.title}>{pad(t.no)} · {t.title}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3 class="mono">Timetable</h3>
+        <ul>
+          {cfg.days.map((d) => <li>{d}</li>)}
+        </ul>
+      </div>
+      <div>
+        <h3 class="mono">Depot</h3>
+        <ul>
+          <li>{cfg.place}</li>
+          <li><a class="ulink" href={href('rss.xml')} data-cursor="link">RSS feed</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="wordmark" aria-hidden="true" data-wordmark>Tramline <em>Tales</em></div>
+  <div class="wrap foot-base mono">
+    <span>© {year} {cfg.author}</span>
+    <span>Written in {cfg.stampPlace}, over kadak chai</span>
+  </div>
+</footer>

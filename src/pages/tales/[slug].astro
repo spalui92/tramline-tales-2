@@ -1,0 +1,86 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Stamp from '../../components/Stamp.astro';
+import { cfg, tales, href, absolute, longDate, pad, chai, type Tale } from '../../lib/site';
+
+export function getStaticPaths() {
+  return tales.map((tale, i) => ({ params: { slug: tale.slug }, props: { tale, next: tales[(i + 1) % tales.length] } }));
+}
+const { tale, next } = Astro.props as { tale: Tale; next: Tale };
+const fit = (w: number, list: number[]) => { const ok = list.filter((x) => x <= w); return ok.length ? ok : [w]; };
+const og = tale.cover ? absolute((await getImage({ src: tale.cover.image, width: 1200, format: 'jpg' })).src.replace(import.meta.env.BASE_URL, '')) : undefined;
+let section = 0, photo = 0;
+const isNewest = next.no === 1 && tales.length > 1;
+const jsonld = {
+  '@context': 'https://schema.org', '@type': 'BlogPosting', headline: tale.title, datePublished: tale.date,
+  description: tale.summary, url: absolute(`tales/${tale.slug}/`), image: og, wordCount: tale.words,
+  author: { '@type': 'Person', name: cfg.author }, publisher: { '@type': 'Person', name: cfg.author },
+};
+---
+<Base page="tale" title={tale.title} description={tale.summary} image={og} accent={tale.colour} article={{ date: tale.date, tag: tale.tag }} wire jsonld={jsonld}>
+  <article class="tale">
+    <header class="tale-hero">
+      <div class="glow" aria-hidden="true"></div>
+      <span class="bignum" aria-hidden="true" data-bignum>{pad(tale.no)}</span>
+      <div class="tale-meta mono" data-reveal>
+        <span class="no">Tale No. {pad(tale.no)}</span>
+        {tale.tag && <span>{tale.tag}</span>}
+        <time datetime={tale.date}>{longDate(tale.date)}</time>
+      </div>
+      <h1 class="tale-title" data-split>{tale.title}</h1>
+      {tale.note && <span class="margin-note" data-reveal aria-label={`Margin note: ${tale.note}`}>{tale.note}</span>}
+      <div class="tale-sub">
+        <p class="summary" data-reveal>{tale.summary}</p>
+        <div class="readtime mono" data-reveal><Icon name="chai" />{tale.minutes} min · {chai(tale.minutes)}</div>
+      </div>
+    </header>
+
+    <div class="prose" data-prose>
+      {tale.body.map((b) => {
+        if (b.t === 'p') return <p>{b.x}</p>;
+        if (b.t === 'h') return <h2><span class="sec">§ {pad(++section)}</span>{b.x}</h2>;
+        if (b.t === 'quote') return (
+          <blockquote class="said" data-reveal>
+            <span class="dd" aria-hidden="true">॥</span>
+            <span class="line">{b.line}</span>
+            {b.gloss && <span class="gloss">{b.gloss}</span>}
+          </blockquote>
+        );
+        if (b.t === 'list') return (
+          <ol class="az">{b.items.map((li) => <li><span class="mk" aria-hidden="true">{li.mark}</span><span>{li.x}</span></li>)}</ol>
+        );
+        const r = [-1.6, 1.2, -0.8, 1.8][photo++ % 4];
+        return (
+          <figure class="postcard" style={`--r:${r}deg`} data-postcard>
+            <div class="card">
+              <div class="img" data-clip>
+                <Image src={b.image} alt={b.caption} widths={fit(b.image.width, [640, 1000, 1400])} sizes="(max-width: 760px) 100vw, 760px" loading="lazy" data-parallax />
+              </div>
+              <figcaption>{b.caption}</figcaption>
+            </div>
+          </figure>
+        );
+      })}
+
+      <div class="signoff" data-signoff>
+        <div class="sign">&mdash; {cfg.initials}<small>{cfg.author} · {cfg.stampPlace}</small></div>
+        <Stamp date={tale.date} id={tale.slug} />
+      </div>
+      <div class="share mono">
+        <button class="ulink" type="button" data-copy={absolute(`tales/${tale.slug}/`)} data-cursor="link">Copy link to this tale</button>
+        <button class="ulink" type="button" data-share data-title={tale.title} data-url={absolute(`tales/${tale.slug}/`)} data-cursor="link" hidden>Share</button>
+        <a class="ulink" href={href('#tales')} data-cursor="link">All tales</a>
+      </div>
+    </div>
+  </article>
+
+  {tales.length > 1 && (
+    <a class="next" href={href(`tales/${next.slug}/`)} data-cursor="Ride" data-wipe={next.colour} data-wipe-to={next.title} aria-label={`Next tale: ${next.title}`}>
+      <span class="row mono"><span>{isNewest ? 'Back to the first tale' : 'Hail the next tale'} · No. {pad(next.no)}</span><span class="badge">No refusal</span></span>
+      <span class="t">{next.title}</span>
+      <span class="row"><Icon name="taxi" class="taxi" /><span class="arrow" aria-hidden="true">&rarr;</span></span>
+    </a>
+  )}
+</Base>
