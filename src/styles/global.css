@@ -162,7 +162,8 @@ html.js.arriving .wipe { visibility: visible; }
 .hero-title { align-self: start; margin: clamp(10px, 4vh, 48px) 0 0; font-family: var(--f-display); font-weight: 400; line-height: 0.82; letter-spacing: -0.035em; font-size: clamp(80px, 17.2vw, 330px); }
 .hero-title .l1 { display: block; }
 /* the desi ट standing in for each T */
-.hero-title .dv { font-family: 'Tiro Devanagari Hindi', var(--f-display); font-size: var(--dv-size, 0.9em); letter-spacing: 0; margin-right: 0.02em; }
+/* the desi ट: as tall as a capital, in sindoor, like the Hindi letters on the English Vinglish poster */
+.hero-title .dv { display: inline-block; font-family: 'Tiro Devanagari Hindi', var(--f-display); font-size: var(--dv-size, 1.2em); line-height: 0.6; letter-spacing: 0; margin-right: 0.015em; color: var(--sindoor); position: relative; top: 0.046em; }
 .hero-title .l2 { display: block; padding-left: 0.62em; font-style: italic; color: var(--accent); }
 .hero-title .bn { display: block; font-family: var(--f-bn); font-size: clamp(14px, 1.5vw, 22px); letter-spacing: 0.02em; color: var(--paper-dim); margin: 0.9em 0 0 0.25em; line-height: 1.4; }
 .hero-foot { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 24px; }
