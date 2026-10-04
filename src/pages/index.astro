@@ -3,12 +3,14 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Bridge from '../components/Bridge.astro';
 import Icon from '../components/Icon.astro';
+import Clip from '../components/Clip.astro';
 import { cfg, tales, newestFirst, allPhotos, href, absolute, longDate, shortDate, pad, chai } from '../lib/site';
 
 const latest = newestFirst[0];
 const mottoEm = new Set(['old', 'tracks,', 'window', 'seat,']);
 const mottoWords = cfg.motto.join(' ').split(' ');
 const stops = ['Howrah', 'Esplanade', 'College Street', 'Shyambazar', 'Gariahat', 'Ballygunge', 'Kalighat', 'Tollygunge'];
+const lean = [-2.2, 1.8, -1.2, 2.4];
 const tilt = (i: number) => (((i * 37) % 7) - 3) * 0.7;
 const fit = (w: number, list: number[]) => { const ok = list.filter((x) => x <= w); return ok.length ? ok : [w]; };
 
@@ -62,11 +64,11 @@ const jsonld = {
       <span class="mono" style="color:var(--muted)">Newest first</span>
     </div>
     <ol class="tale-list" reversed>
-      {newestFirst.map((t) => (
+      {newestFirst.map((t, i) => (
         <li class="tale-row" style={`--c:${t.colour}`} data-row={t.slug} data-reveal>
           <a href={href(`tales/${t.slug}/`)} data-cursor="Read" data-wipe={t.colour} data-wipe-to={t.title}>
             {t.cover && (
-              <span class="thumb"><Image src={t.cover.image} alt="" widths={fit(t.cover.image.width, [480, 900])} sizes="100vw" loading="lazy" /></span>
+              <span class="thumb"><span class="pinned" style={`--r:${lean[i % lean.length]}deg`}><Clip /><Image src={t.cover.image} alt="" widths={fit(t.cover.image.width, [480, 900])} sizes="86vw" loading="lazy" /></span></span>
             )}
             <span class="no mono">No. {pad(t.no)}</span>
             <span class="t">{t.title}</span>
@@ -78,8 +80,10 @@ const jsonld = {
       ))}
     </ol>
     <div class="peek" aria-hidden="true" data-peek>
-      {newestFirst.map((t) => t.cover && (
-        <Image src={t.cover.image} alt="" data-peek-img={t.slug} widths={fit(t.cover.image.width, [400, 700])} sizes="340px" loading="lazy" />
+      {newestFirst.map((t, i) => t.cover && (
+        <div class="pinned peek-card" data-peek-img={t.slug} style={`--c:${t.colour};--r:${lean[i % lean.length]}deg`}>
+          <Clip /><Image src={t.cover.image} alt="" widths={fit(t.cover.image.width, [400, 700])} sizes="340px" loading="lazy" />
+        </div>
       ))}
     </div>
   </section>
@@ -96,6 +100,7 @@ const jsonld = {
           <li class="pc" style={`--c:${p.tale.colour};--r:${tilt(i)}deg`}>
             <a href={href(`tales/${p.tale.slug}/`)} data-cursor="Read" data-wipe={p.tale.colour} data-wipe-to={p.tale.title}>
               <div class="card">
+                <Clip />
                 <div class="img"><Image src={p.image} alt={p.caption} widths={fit(p.image.width, [420, 800])} sizes="(max-width: 899px) 78vw, 26vw" loading="lazy" /></div>
                 <div class="cap">{p.caption}</div>
               </div>
