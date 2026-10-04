@@ -6,6 +6,8 @@
 @import '@fontsource/courier-prime/latin-700.css';
 @import '@fontsource/nanum-pen-script/latin-400.css';
 @import '@fontsource/noto-serif-bengali/bengali-400.css';
+@import '@fontsource/tiro-devanagari-hindi/devanagari-400.css';
+@import '@fontsource/tiro-devanagari-hindi/devanagari-400-italic.css';
 @import 'lenis/dist/lenis.css';
 
 /* ---------- tokens ---------- */
@@ -159,6 +161,8 @@ html.js.arriving .wipe { visibility: visible; }
 .hero-kicker { display: flex; justify-content: space-between; gap: 16px; color: var(--paper-dim); }
 .hero-title { align-self: start; margin: clamp(10px, 4vh, 48px) 0 0; font-family: var(--f-display); font-weight: 400; line-height: 0.82; letter-spacing: -0.035em; font-size: clamp(80px, 17.2vw, 330px); }
 .hero-title .l1 { display: block; }
+/* the desi ट standing in for each T */
+.hero-title .dv { font-family: 'Tiro Devanagari Hindi', var(--f-display); font-size: var(--dv-size, 0.9em); letter-spacing: 0; margin-right: 0.02em; }
 .hero-title .l2 { display: block; padding-left: 0.62em; font-style: italic; color: var(--accent); }
 .hero-title .bn { display: block; font-family: var(--f-bn); font-size: clamp(14px, 1.5vw, 22px); letter-spacing: 0.02em; color: var(--paper-dim); margin: 0.9em 0 0 0.25em; line-height: 1.4; }
 .hero-foot { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 24px; }
