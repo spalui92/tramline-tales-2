@@ -156,10 +156,23 @@ function hero() {
   if (!motion) return;
 
   const tl = gsap.timeline();
+  // the English letters rise first, leaving a space where each ट belongs
+  const dvs = $$('.dv', hero);
+  gsap.set(dvs, { opacity: 0, clipPath: 'inset(-30% 100% -30% -10%)' });
   $$('[data-hero-line]', hero).forEach((line, i) => {
-    const split = SplitText.create(line, { type: 'chars', mask: 'chars' });
+    const split = SplitText.create($('.en', line) ?? line, { type: 'chars', mask: 'chars' });
     gsap.set(line, { visibility: 'visible' });
-    tl.from(split.chars, { yPercent: 115, duration: 1.4, ease: 'expo.out', stagger: 0.045 }, i * 0.18);
+    tl.from(split.chars, { yPercent: 115, duration: 1.4, ease: 'expo.out', stagger: 0.045 }, 0.1 + i * 0.18);
+  });
+  // then the Hindi letters arrive last, written in like a pen stroke, the ink settling as it dries
+  dvs.forEach((dv, i) => {
+    const at = 1.25 + i * 0.5;
+    tl.set(dv, { opacity: 1 }, at)
+      .to(dv, { clipPath: 'inset(-30% -10% -30% -10%)', duration: 1.15, ease: 'power2.inOut' }, at)
+      .fromTo(dv, { filter: 'blur(7px)', y: 8, scale: 1.07 }, {
+        filter: 'blur(0px)', y: 0, scale: 1, duration: 1.6, ease: 'expo.out', transformOrigin: '30% 85%',
+        onComplete: () => gsap.set(dv, { clearProps: 'filter,clipPath' }),
+      }, at);
   });
   const draw = $$('[data-draw] path', hero);
   tl.to(draw, { strokeDashoffset: 0, duration: 2.6, ease: 'power2.inOut', stagger: 0.12 }, 0.1);
