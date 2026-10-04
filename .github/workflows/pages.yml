@@ -1,4 +1,4 @@
-name: Publish the diary
+name: Publish the site
 
 on:
   push:
@@ -20,14 +20,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
+          fetch-depth: 0 # full history: undated articles take the day they were first committed
+      - uses: actions/setup-node@v4
         with:
-          python-version: "3.12"
-      - run: python build.py
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: dist
   deploy:
     needs: build
     runs-on: ubuntu-latest
