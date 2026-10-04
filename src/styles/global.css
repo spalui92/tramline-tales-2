@@ -92,11 +92,11 @@ html.js [data-draw] path, html.js [data-draw] line { stroke-dasharray: 1; stroke
 .site-header.is-solid::before { opacity: 1; }
 .brand { display: flex; align-items: center; gap: 12px; line-height: 1; }
 /* the navbar logo: the tram from the reading wire, then a faded, worn wordmark */
-.brand-tram { width: 44px; color: var(--accent); flex: none; }
+.brand-tram { width: 38px; color: var(--accent); flex: none; }
 .brand .stack { display: flex; flex-direction: column; }
-.brand .w1 { font-family: 'Special Elite', var(--f-mono); font-size: 19px; letter-spacing: 0.06em; opacity: 0.9;
+.brand .w1 { font-family: 'Special Elite', var(--f-mono); font-size: 16px; letter-spacing: 0.06em; opacity: 0.9;
   -webkit-mask: var(--worn-a); mask: var(--worn-a); }
-.brand .w2 { font-family: 'Imperial Script', var(--f-display); font-size: 34px; margin: -0.38em 0 -0.12em 1.5em; color: var(--accent); opacity: 0.9;
+.brand .w2 { font-family: 'Imperial Script', var(--f-display); font-size: 29px; margin: -0.38em 0 -0.12em 1.5em; color: var(--accent); opacity: 0.9;
   -webkit-mask: var(--worn-b); mask: var(--worn-b); }
 .brand .bn { align-self: flex-start; margin-top: 3px; }
 :root {
