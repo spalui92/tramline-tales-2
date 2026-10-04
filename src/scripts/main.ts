@@ -40,7 +40,10 @@ function scrollToY(target: number | HTMLElement) {
   let last = scrollY;
   addEventListener('scroll', () => {
     const y = scrollY;
-    if (header) header.classList.toggle('is-hidden', y > last && y > 160);
+    if (header) {
+      header.classList.toggle('is-hidden', y > last && y > 160);
+      header.classList.toggle('is-solid', y > 40);
+    }
     last = y;
   }, { passive: true });
 }
@@ -183,14 +186,15 @@ function taleList() {
   const xTo = gsap.quickTo(peek, 'x', { duration: 0.9, ease: 'expo.out' });
   const yTo = gsap.quickTo(peek, 'y', { duration: 0.9, ease: 'expo.out' });
   const imgs = $$('[data-peek-img]', peek);
-  list.addEventListener('mousemove', (e) => { xTo(e.clientX + 40); yTo(e.clientY - peek.offsetHeight / 2); });
+  let active: HTMLElement | undefined;
+  list.addEventListener('mousemove', (e) => { xTo(e.clientX + 48); yTo(e.clientY - (active?.offsetHeight ?? 300) / 2); });
   $$('.tale-row', list).forEach((row) => {
     row.addEventListener('mouseenter', () => {
-      imgs.forEach((im) => im.classList.toggle('on', im.dataset.peekImg === row.dataset.row));
-      gsap.to(peek, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.7, ease: 'expo.out' });
+      active = imgs.find((im) => im.dataset.peekImg === row.dataset.row);
+      imgs.forEach((im) => im.classList.toggle('on', im === active));
     });
   });
-  list.addEventListener('mouseleave', () => gsap.to(peek, { clipPath: 'inset(50% 50% 50% 50%)', duration: 0.5, ease: 'expo.out' }));
+  list.addEventListener('mouseleave', () => imgs.forEach((im) => im.classList.remove('on')));
 }
 
 function postcards() {
