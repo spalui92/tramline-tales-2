@@ -154,8 +154,10 @@ html.js.motion.first-visit .loader { display: grid; }
 .ticket .count { font-size: 30px; font-weight: 700; letter-spacing: 0.1em; font-variant-numeric: tabular-nums; }
 /* three small window dots, bottom right of the ticket: close, minimise, maximise */
 .ticket { padding-bottom: 28px; }
-.ticket .punch { position: absolute; right: 22px; bottom: 10px; display: flex; gap: 5px; }
-.ticket .punch i { display: block; box-sizing: content-box; width: 7px; height: 7px; border-radius: 50%; border: 5px solid var(--ink); transform: scale(0); }
+.ticket .punch { position: absolute; right: 22px; bottom: 9px; display: flex; align-items: center; gap: 6px; }
+.ticket .punch i { display: block; width: 7px; height: 7px; border-radius: 50%; transform: scale(0); }
+.ticket .punch i:nth-child(2) { width: 10px; height: 10px; }
+.ticket .punch i:nth-child(3) { width: 13px; height: 13px; }
 .ticket .punch i:nth-child(1) { background: #ff5f57; }
 .ticket .punch i:nth-child(2) { background: #3b82f6; }
 .ticket .punch i:nth-child(3) { background: #28c840; }
