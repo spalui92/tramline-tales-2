@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
 import { initRiver } from './river';
+import { initHighways } from './highway';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 (window as any).__tt = true;
@@ -153,6 +154,7 @@ function hero() {
   if (!hero) return;
   const canvas = $<HTMLCanvasElement>('[data-river]', hero);
   if (canvas) initRiver(canvas, hero, motion);
+  initHighways(hero, motion);
   if (!motion) return;
 
   const tl = gsap.timeline();
