@@ -77,18 +77,18 @@ const jsonld = {
     </div>
   </section>
 
-  <!-- FIVE WINDOWS FROM THE LINE -->
+  <!-- KOLKATA BYLANES: five detours off the line -->
   <section class="section wrap windows" aria-labelledby="win-title">
     <div class="win-head">
-      <h2 id="win-title" data-split>Five windows <em>from the line</em></h2>
-      <p data-reveal>Five frames from Kolkata, selected for the mood they leave behind.<br />No archive. No endless scroll. Just five.</p>
+      <h2 id="win-title" data-split>Kolkata <em>Bylanes</em><span class="sub">five detours off the line</span></h2>
+      <p data-reveal>Not the postcard Kolkata. Five things this city keeps handing back to me, long after the tram has turned the corner.<br />No archive. No endless scroll. Just five.</p>
     </div>
     <ul class="win-grid" role="list">
       {windows.map((w, i) => (
         <li class={`win win-${i + 1}`} data-reveal>
           <figure>
-            <Frame frame={w} widths={i === 0 ? [800, 1400, 2000] : [500, 900, 1300]} sizes={i === 0 ? '(max-width: 760px) 100vw, 50vw' : '(max-width: 760px) 50vw, 25vw'} />
-            <figcaption><span class="mono">Window {pad(i + 1)}</span><b>{w.place}</b><span class="note">{w.note}</span></figcaption>
+            <Frame frame={w} widths={[400, 700, 1000]} sizes="(max-width: 760px) 50vw, 20vw" />
+            <figcaption><span class="mono">Bylane {pad(i + 1)}</span><b>{w.place}</b><span class="note">{w.note}</span></figcaption>
           </figure>
         </li>
       ))}
