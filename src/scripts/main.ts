@@ -203,6 +203,50 @@ function taleList() {
   list.addEventListener('mouseleave', () => imgs.forEach((im) => im.classList.remove('on')));
 }
 
+/* ---------- about: "Kolkata has a heartbeat of its own." ---------- */
+// As the reader scrolls, the line is typed letter by letter with the cursor moving
+// along; then a tram rides the overhead wire through a heartbeat blip, and a heart
+// is drawn at the end of the line and starts to beat.
+function heartbeat() {
+  const fig = $('[data-beat]');
+  if (!fig) return;
+  const heart = $('[data-heart]', fig)!;
+  if (!motion) { heart.classList.add('beating'); return; }
+  const keys = $$('.k', fig);
+  const text = $('p', fig)!, caret = $('[data-caret]', fig)!;
+  const wire = $<SVGPathElement>('[data-wire]', fig)!, rider = $<SVGGElement>('[data-rider]', fig)!;
+  const length = wire.getTotalLength();
+  const clamp = gsap.utils.clamp(0, 1);
+  gsap.set([wire, heart], { strokeDasharray: 1, strokeDashoffset: 1 });
+
+  let shown = -1;
+  const type = (n: number) => {
+    if (n === shown) return;
+    shown = n;
+    keys.forEach((k, i) => k.classList.toggle('on', i < n));
+    const at = keys[Math.max(0, n - 1)].getBoundingClientRect(), box = text.getBoundingClientRect();
+    caret.style.transform = `translate(${(n ? at.right : at.left) - box.left}px, ${at.top - box.top + at.height * 0.05}px)`;
+  };
+  const ride = (q: number) => {
+    const pt = wire.getPointAtLength(length * q);
+    rider.setAttribute('transform', `translate(${(pt.x - 24.2).toFixed(1)} ${(pt.y - 0.8).toFixed(1)})`);
+  };
+
+  const update = (p: number) => {
+    const typed = clamp(p / 0.6), drawn = clamp((p - 0.62) / 0.26), inked = clamp((p - 0.9) / 0.08);
+    type(Math.round(typed * keys.length));
+    caret.style.visibility = p < 0.62 ? 'visible' : 'hidden';
+    wire.style.strokeDashoffset = String(1 - drawn);
+    rider.style.opacity = drawn > 0 ? '1' : '0';
+    ride(drawn);
+    heart.style.strokeDashoffset = String(1 - inked);
+    heart.style.fillOpacity = inked >= 1 ? '1' : '0';
+    heart.classList.toggle('beating', inked >= 1);
+  };
+  update(0);
+  ScrollTrigger.create({ trigger: fig, start: 'top 82%', end: 'bottom 42%', onUpdate: (self) => update(self.progress), onRefresh: (self) => update(self.progress) });
+}
+
 /* ---------- footer: the zipper closes as "Still on the line" arrives ---------- */
 function zipper() {
   const board = $('[data-zip]');
@@ -308,6 +352,7 @@ cursor();
 tale();
 taleList();
 zipper();
+heartbeat();
 const ready = boardTicket().then(arrive);
 ready.then(() => {
   hero();
