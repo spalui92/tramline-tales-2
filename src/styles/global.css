@@ -7,7 +7,7 @@
 @import '@fontsource/nanum-pen-script/latin-400.css';
 @import '@fontsource/special-elite/latin-400.css';
 @import '@fontsource/imperial-script/latin-400.css';
-@import '@fontsource/galada/bengali-400.css';
+@import '@fontsource/noto-serif-bengali/bengali-400.css';
 @import '@fontsource/tiro-devanagari-hindi/devanagari-400.css';
 @import '@fontsource/tiro-devanagari-hindi/devanagari-400-italic.css';
 @import 'lenis/dist/lenis.css';
@@ -31,7 +31,7 @@
   --f-body: 'Newsreader Variable', Georgia, serif;
   --f-mono: 'Courier Prime', 'Courier New', monospace;
   --f-hand: 'Nanum Pen Script', 'Segoe Print', cursive;
-  --f-bn: 'Galada', 'Noto Sans Bengali', sans-serif;
+  --f-bn: 'Noto Serif Bengali', serif;
 
   --gutter: clamp(16px, 2.6vw, 40px);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -192,8 +192,8 @@ html.js.arriving .wipe { visibility: visible; }
 .hero-title .l1, .hero-title .l2 { display: block; }
 .hero-title .l2 { font-style: italic; color: var(--accent); }
 .kicker { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 14px; margin: clamp(12px, 1.6vh, 18px) 0 0; line-height: 1.25; }
-/* Galada: hand-lettered Bengali, like an old Kolkata signboard */
-.kicker .bn { font-family: var(--f-bn); font-size: clamp(18px, 1.45vw, 22px); line-height: 1.2; color: var(--paper); }
+/* Upright, regular-weight Bengali (no italics, no bold) */
+.kicker .bn { font-family: var(--f-bn); font-size: clamp(18px, 1.45vw, 22px); line-height: 1.2; color: var(--paper); font-style: normal; font-weight: 400; }
 .kicker .sep { color: var(--accent); }
 .kicker .en { font-family: var(--f-mono); font-size: clamp(11px, 0.9vw, 13px); letter-spacing: 0.22em; text-transform: uppercase; color: var(--paper-dim); }
 
