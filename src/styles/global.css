@@ -287,7 +287,8 @@ html.js.motion .beat .k.on { opacity: 1; }
 .beat .caret { display: none; position: absolute; left: 0; top: 0; width: 0.58em; height: 0.09em; background: var(--accent); }
 html.js.motion .beat .caret { display: block; animation: caret 0.9s steps(1) infinite; }
 @keyframes caret { 50% { opacity: 0; } }
-.beat-wire { display: block; width: min(100%, 520px); margin: 14px 0 0 auto; overflow: visible; }
+/* the heartbeat runs from the middle of the line to its right edge, the credit right-aligned beneath */
+.beat-wire { display: block; width: clamp(220px, 56%, 520px); margin: 14px 0 0 auto; overflow: visible; }
 .beat-wire .wire { stroke: var(--paper-dim); stroke-width: 1.4; }
 .beat-wire .rider { color: var(--accent); }
 .beat-wire .heart { stroke: var(--sindoor); stroke-width: 2.6; fill: rgba(239, 75, 54, 0.14); transform-box: fill-box; transform-origin: 50% 55%; }
