@@ -2,8 +2,11 @@
 // Howrah Bridge in profile, drawn from its geometry: two anchor arms, two towers,
 // cantilever arms reaching in, and the suspended span hanging between them.
 // The water line is the bottom edge of the drawing (y = 340).
-interface Props { class?: string; mirror?: boolean }
-const { class: cls, mirror } = Astro.props;
+// `span` widens the drawing beyond the main bridge (1600) with approach viaducts,
+// so it can run edge to edge on a wide screen without the towers growing too tall.
+interface Props { class?: string; mirror?: boolean; span?: number }
+const { class: cls, mirror, span = 1600 } = Astro.props;
+const shift = (span - 1600) / 2;
 
 const DECK = 262, WATER = 340;
 const A1 = 225, T1 = 400, S1 = 650, S2 = 950, T2 = 1200, A2 = 1375;
@@ -30,19 +33,24 @@ const diagonals = xs.slice(0, -1).map((x, i) => {
   const n = xs[i + 1];
   return i % 2 === 0 ? `M${x} ${DECK}L${n} ${r(top(n))}` : `M${x} ${r(top(x))}L${n} ${DECK}`;
 }).join('');
-const deck = `M0 ${DECK}H1600M0 ${DECK + 9}H1600`;
+const deck = `M0 ${DECK}H${span}M0 ${DECK + 9}H${span}`;
 const towers = [T1, T2].map((t) => `M${t - 9} ${TOP + 4}V${WATER}M${t + 9} ${TOP + 4}V${WATER}M${t - 9} ${TOP + 4}L${t} ${TOP - 14}L${t + 9} ${TOP + 4}` +
   `M${t - 9} ${DECK + 9}L${t + 9} ${WATER}M${t + 9} ${DECK + 9}L${t - 9} ${WATER}`).join('');
-const piers = [60, 140, 1460, 1540].map((x) => `M${x} ${DECK + 9}V${WATER}`).join('') + `M${A1} ${DECK + 9}V${WATER}M${A2} ${DECK + 9}V${WATER}`;
+// piers under the approach viaducts, evenly spaced out to both edges
+const approach: number[] = [];
+for (let x = shift + A1 - 85; x > 20; x -= 85) approach.push(x, span - x);
+const piers = approach.map((x) => `M${r(x)} ${DECK + 9}V${WATER}`).join('') + `M${shift + A1} ${DECK + 9}V${WATER}M${shift + A2} ${DECK + 9}V${WATER}`;
 const lamps: number[] = [];
-for (let x = 30; x < 1600; x += 56) lamps.push(x);
+for (let x = 30; x < span; x += 56) lamps.push(x);
 ---
-<svg class={cls} viewBox="0 0 1600 340" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-draw={mirror ? undefined : ''}>
-  <path d={towers} stroke-width="2.2" pathLength="1" />
-  <path d={chord} stroke-width="2" pathLength="1" />
+<svg class={cls} viewBox={`0 0 ${span} 340`} fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-draw={mirror ? undefined : ''} data-span={span}>
+  <g transform={`translate(${shift} 0)`}>
+    <path d={towers} stroke-width="2.2" pathLength="1" />
+    <path d={chord} stroke-width="2" pathLength="1" />
+    <path d={verticals} stroke-width="0.9" pathLength="1" opacity="0.8" />
+    <path d={diagonals} stroke-width="0.9" pathLength="1" opacity="0.8" />
+  </g>
   <path d={deck} stroke-width="1.6" pathLength="1" />
-  <path d={verticals} stroke-width="0.9" pathLength="1" opacity="0.8" />
-  <path d={diagonals} stroke-width="0.9" pathLength="1" opacity="0.8" />
   <path d={piers} stroke-width="1.4" pathLength="1" />
   {lamps.map((x) => <circle class="lamp" cx={x} cy={DECK - 5} r="2.2" />)}
 </svg>

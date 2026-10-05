@@ -163,48 +163,51 @@ html.js.motion.first-visit .loader { display: grid; }
 .wipe .tram { width: 90px; margin: 0 auto 16px; }
 html.js.arriving .wipe { visibility: visible; }
 
-/* ---------- hero: a shorter photograph, the masthead set in the open water ---------- */
-.hero { position: relative; height: clamp(440px, 66svh, 760px); overflow: hidden; isolation: isolate; }
+/* ---------- hero: Howrah Bridge across the night, a highway rolling out beneath it ---------- */
+/* --horizon is how far up from the bottom the bridge stands; the road fills everything below it */
+.hero { --horizon: 46%; position: relative; height: clamp(470px, 68svh, 780px); overflow: hidden; isolation: isolate; }
 .hero canvas.river { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; }
-.hero .river-fallback { position: absolute; inset: 0; z-index: -3; background: linear-gradient(to bottom, #0c0b09 0%, #1a130d 52%, #2a1a0e 58%, #0b0c10 58.2%, #07080a 100%); }
-.hero .bridge { position: absolute; left: 61%; bottom: 40%; width: max(92%, 900px); max-width: none; transform: translateX(-50%); color: var(--paper); opacity: 0.6; z-index: -1; }
-.hero .bridge.mirror { bottom: auto; top: 60%; transform: translateX(-50%) scaleY(-0.55); transform-origin: top; opacity: 0.12; filter: blur(1.2px); -webkit-mask: linear-gradient(to bottom, #000, transparent 75%); mask: linear-gradient(to bottom, #000, transparent 75%); }
+.hero .river-fallback { position: absolute; inset: 0; z-index: -3; background: linear-gradient(to bottom, #0c0b09 0%, #1a130d 48%, #2a1a0e 54%, #0b0c10 54.2%, #07080a 100%); }
+.hero .bridge { position: absolute; max-width: none; color: var(--paper); opacity: 0.6; z-index: -1; }
 .hero .lamp { fill: #ffb45e; stroke: none; }
-/* a little extra night over the water, so the masthead reads cleanly */
-.hero::after { content: ''; position: absolute; inset: auto 0 0; height: 46%; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, transparent, rgba(12, 11, 9, 0.62)); }
-.hero-inner { position: absolute; inset: 0; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 40px; padding: calc(var(--header-h) + 2vh) var(--gutter) clamp(16px, 2.4vh, 24px); }
-/* who and where, set at the photograph's bottom-right, on the kicker's line */
-.hero-meta { margin: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; color: var(--paper-dim); line-height: 1.25; }
-.masthead { max-width: 100%; }
+/* desktop: the whole bridge, approach viaducts and all, edge to edge */
+.hero .bridge.wide { left: 0; width: 100%; bottom: var(--horizon); }
+.hero .bridge.wide.mirror { bottom: auto; top: calc(100% - var(--horizon)); transform: scaleY(-0.55); transform-origin: top; opacity: 0.1; filter: blur(1.2px); -webkit-mask: linear-gradient(to bottom, #000, transparent 70%); mask: linear-gradient(to bottom, #000, transparent 70%); }
+.hero .bridge.narrow { display: none; }
+/* a little extra night over the road, so the masthead reads cleanly */
+.hero::after { content: ''; position: absolute; inset: auto 0 0; height: calc(var(--horizon) + 6%); z-index: -1; pointer-events: none; background: linear-gradient(to bottom, transparent, rgba(12, 11, 9, 0.6)); }
+
+/* the highway: from the bridge's horizon down to the reader, faded well into the background */
+.highway { position: absolute; left: 0; right: 0; top: calc(100% - var(--horizon)); width: 100%; height: var(--horizon); max-width: none; z-index: 0; pointer-events: none; opacity: 0.32;
+  -webkit-mask: linear-gradient(to bottom, transparent 0%, #000 22%, #000 74%, transparent 100%); mask: linear-gradient(to bottom, transparent 0%, #000 22%, #000 74%, transparent 100%); }
+.highway .edge { stroke: var(--paper); stroke-width: 1.2; fill: none; vector-effect: non-scaling-stroke; }
+.highway .lane { fill: var(--paper); opacity: 0.55; }
+.highway .mid { fill: var(--taxi); }
+.highway-phone { display: none; }
+
+/* the masthead and kicker: one centred lockup standing on the road */
+.hero-inner { position: absolute; inset: 0; z-index: 1; display: flex; align-items: flex-end; justify-content: center; padding: calc(var(--header-h) + 2vh) var(--gutter) clamp(18px, 2.8vh, 28px); }
+.masthead { width: 100%; text-align: center; }
 .hero-title { margin: 0; font-family: var(--f-display); font-weight: 400; line-height: 0.86; letter-spacing: -0.03em; font-size: clamp(48px, 5.6vw + 8px, 88px); }
-.hero-title .l1 { display: block; }
-.hero-title .l2 { display: block; padding-left: 0.62em; font-style: italic; color: var(--accent); }
-/* the Bengali and English kicker: the last line of the photograph, sitting on the scoreboard's edge */
-.kicker { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: clamp(12px, 1.6vh, 18px) 0 0 0.1em; line-height: 1.25; }
+.hero-title .l1, .hero-title .l2 { display: block; }
+.hero-title .l2 { font-style: italic; color: var(--accent); }
+.kicker { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 14px; margin: clamp(12px, 1.6vh, 18px) 0 0; line-height: 1.25; }
 /* Galada: hand-lettered Bengali, like an old Kolkata signboard */
 .kicker .bn { font-family: var(--f-bn); font-size: clamp(18px, 1.45vw, 22px); line-height: 1.2; color: var(--paper); }
 .kicker .sep { color: var(--accent); }
 .kicker .en { font-family: var(--f-mono); font-size: clamp(11px, 0.9vw, 13px); letter-spacing: 0.22em; text-transform: uppercase; color: var(--paper-dim); }
-/* the highway behind the masthead: phones only, faded well into the background */
-.highway { display: none; }
+
+/* phones: the centre span rides high and the road is taller; the kicker stacks, its divider is the road's centre line */
 @media (max-width: 720px) {
-  .highway { display: block; position: absolute; left: 0; right: 0; top: 50%; bottom: 0; width: 100%; height: 50%; z-index: 0; max-width: none; pointer-events: none; opacity: 0.32;
-    -webkit-mask: linear-gradient(to bottom, transparent 0%, #000 22%, #000 72%, transparent 100%); mask: linear-gradient(to bottom, transparent 0%, #000 22%, #000 72%, transparent 100%); }
-  .highway .edge { stroke: var(--paper); stroke-width: 1.2; fill: none; vector-effect: non-scaling-stroke; }
-  .highway .lane { fill: var(--paper); opacity: 0.55; }
-  .highway .mid { fill: var(--taxi); }
-}
-/* phones: the bridge rides high, and the masthead and kicker form one centred lockup on the water */
-@media (max-width: 720px) {
-  .hero { height: clamp(480px, 64svh, 600px); }
-  .hero .bridge { left: 50%; bottom: 50%; width: 186vw; }
-  .hero .bridge.mirror { top: 50%; }
+  .hero { --horizon: 50%; height: clamp(480px, 64svh, 600px); }
+  .hero .bridge.wide { display: none; }
+  .hero .bridge.narrow { display: block; left: 50%; bottom: var(--horizon); width: 186vw; transform: translateX(-50%); }
+  .hero .bridge.narrow.mirror { bottom: auto; top: calc(100% - var(--horizon)); transform: translateX(-50%) scaleY(-0.55); transform-origin: top; opacity: 0.12; filter: blur(1.2px); -webkit-mask: linear-gradient(to bottom, #000, transparent 75%); mask: linear-gradient(to bottom, #000, transparent 75%); }
   .hero::after { height: 62%; }
-  .hero-meta { display: none; }
-  .hero-inner { justify-content: center; padding-bottom: 24px; }
-  .masthead { width: 100%; text-align: center; }
+  .highway-wide { display: none; }
+  .highway-phone { display: block; }
+  .hero-inner { padding-bottom: 24px; }
   .hero-title { font-size: clamp(48px, 14.4vw, 56px); }
-  .hero-title .l2 { padding-left: 0; }
   .kicker { flex-direction: column; align-items: center; gap: 9px; margin: 18px 0 0; }
   .kicker .bn { font-size: 23px; }
   .kicker .sep { display: none; }

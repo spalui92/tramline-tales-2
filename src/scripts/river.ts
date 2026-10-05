@@ -103,13 +103,15 @@ export function initRiver(canvas: HTMLCanvasElement, hero: HTMLElement, motion: 
     canvas.height = Math.round(hgt * scale);
     gl!.viewport(0, 0, canvas.width, canvas.height);
     gl!.uniform2f(uRes, canvas.width, canvas.height);
-    const bridge = hero.querySelector('.bridge:not(.mirror)');
+    // whichever bridge is showing: edge to edge on desktop, the centre span on phones
+    const bridge = Array.from(hero.querySelectorAll<SVGSVGElement>('.bridge:not(.mirror)')).find((el) => el.getBoundingClientRect().width > 0);
     const hr = hero.getBoundingClientRect();
     if (bridge) {
       const br = bridge.getBoundingClientRect();
+      const span = Number(bridge.dataset.span) || 1600;
       gl!.uniform1f(uHorizon, (hr.bottom - br.bottom) / hgt);
-      gl!.uniform1f(uGap, (56 / 1600) * br.width / w);
-      gl!.uniform1f(uOffset, (br.left - hr.left + (30 / 1600) * br.width) / w);
+      gl!.uniform1f(uGap, (56 / span) * br.width / w);
+      gl!.uniform1f(uOffset, (br.left - hr.left + (30 / span) * br.width) / w);
     } else {
       gl!.uniform1f(uHorizon, 0.36); gl!.uniform1f(uGap, 0.04); gl!.uniform1f(uOffset, 0.02);
     }
