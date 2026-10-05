@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import TaleList from '../../components/TaleList.astro';
+import { cfg, tales, newestFirst, pad, longDate } from '../../lib/site';
+---
+<Base page="archive" title="The archive" description={`Every tale in ${cfg.name}, newest first.`}>
+  <header class="archive-hero wrap">
+    <div class="eyebrow mono">Last stop · the depot</div>
+    <h1 class="archive-title" data-split>The <em>archive</em><sup class="mono">({pad(tales.length)})</sup></h1>
+    <p class="archive-sub" data-reveal>Every tale so far, newest first{tales.length > 1 && <>, from {longDate(tales[0].date)} to {longDate(newestFirst[0].date)}</>}.</p>
+  </header>
+  <section class="wrap archive-list" id="tales" aria-label="All tales">
+    <TaleList items={newestFirst} />
+  </section>
+</Base>

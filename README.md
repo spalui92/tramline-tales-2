@@ -38,15 +38,29 @@ Only `title` is required.
 
 Special lines inside an article:
 
-- **A photo**: put the picture in the `images/` folder and add a line of its own: `![a short handwritten caption](images/photo.jpg)`. It appears as a postcard with your caption written underneath, and also joins the "Postcards from the line" strip on the home page.
+- **A photo**: put the picture in the `images/` folder and add a line of its own: `![a short handwritten caption](images/photo.jpg)`. It appears as a postcard with your caption written underneath.
 - **A dialogue line**: start the paragraph with `॥`, then the line in quotes, then its meaning. Example: `॥ "Rasode mein kaun tha?" Who was in the kitchen?` It is set large, with the meaning underneath.
 - **A list**: start each paragraph with `A/.`, `B/.`, `C/.` and so on. Paragraphs that follow one another become one list.
 
 3. Commit the file. GitHub rebuilds and republishes the site in about two minutes.
 
+## The Kolkata photographs
+
+The home page's "Kolkata Bylanes" (five photographs) and the two narrow frames in the footer ("Still on the line") use pictures kept in `images/kolkata/`. Each slot looks for a file with a fixed name (`.jpg`, `.jpeg`, `.png` or `.webp`):
+
+| File name | Where it appears |
+|---|---|
+| `kadak-cha` | Bylane 01, and the footer's right frame |
+| `yellow-taxi` | Bylane 02 |
+| `bonedi-pujo` | Bylane 03, and the footer's left frame |
+| `satyajit-ray` | Bylane 04 |
+| `college-street` | Bylane 05 |
+
+To swap a picture, upload a new file with the same name. Until a file is there, its slot shows a dark panel, so nothing breaks. The captions, and which part of each photo stays in frame, are set in `src/lib/kolkata.ts`.
+
 ## Change the site's name or details
 
-Edit `config.json`: `name`, `author`, `initials`, `place`, `stampPlace`, `start`, `days` (publishing days), `motto` (shown on the home page), `description` and `siteUrl` (the site's address).
+Edit `config.json`: `name`, `author`, `initials`, `place`, `stampPlace`, `start`, `days` (publishing days), `motto`, `description` and `siteUrl` (the site's address).
 
 ## How it is built
 

@@ -1,18 +1,13 @@
 ---
-import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Bridge from '../components/Bridge.astro';
-import Icon from '../components/Icon.astro';
-import Clip from '../components/Clip.astro';
-import { cfg, tales, newestFirst, allPhotos, href, absolute, longDate, shortDate, pad, chai } from '../lib/site';
+import TaleList from '../components/TaleList.astro';
+import Frame from '../components/Frame.astro';
+import { cfg, tales, newestFirst, href, absolute, shortDate, pad } from '../lib/site';
+import { windows } from '../lib/kolkata';
 
 const latest = newestFirst[0];
-const mottoEm = new Set(['old', 'tracks,', 'window', 'seat,']);
-const mottoWords = cfg.motto.join(' ').split(' ');
-const stops = ['Howrah', 'Esplanade', 'College Street', 'Shyambazar', 'Gariahat', 'Ballygunge', 'Kalighat', 'Tollygunge'];
-const lean = [-2.2, 1.8, -1.2, 2.4];
-const tilt = (i: number) => (((i * 37) % 7) - 3) * 0.7;
-const fit = (w: number, list: number[]) => { const ok = list.filter((x) => x <= w); return ok.length ? ok : [w]; };
+const recent = newestFirst.slice(0, 3);
 
 const jsonld = {
   '@context': 'https://schema.org', '@type': 'Blog', name: cfg.name, description: cfg.description,
@@ -21,123 +16,82 @@ const jsonld = {
 };
 ---
 <Base page="home" jsonld={jsonld}>
-  <!-- HERO: the Hooghly at night, Howrah Bridge drawing itself across it -->
+  <!-- HERO: the Hooghly at night under Howrah Bridge, with the masthead set in the open water -->
   <section class="hero" aria-labelledby="hero-title">
     <div class="river-fallback" aria-hidden="true"></div>
     <canvas class="river" aria-hidden="true" data-river></canvas>
     <Bridge class="bridge" />
     <Bridge class="bridge mirror" mirror />
     <div class="hero-inner">
-      <div class="hero-kicker mono" data-reveal>
-        <span>Essays · Marketing · Brands · Media</span>
-        <span>Est. {shortDate(cfg.start)} · {cfg.stampPlace}</span>
+      <div class="masthead">
+        <h1 class="hero-title" id="hero-title">
+          <span class="sr">Tramline Tales</span>
+          <span class="l1" data-hero-line aria-hidden="true"><span class="dv" lang="hi">ट</span><span class="en">ramline</span></span>
+          <span class="l2" data-hero-line aria-hidden="true"><span class="dv" lang="hi">ट</span><span class="en">ales</span></span>
+        </h1>
+        <p class="kicker" data-reveal><span class="bn" lang="bn">ট্রামলাইনের টুকিটাকি</span><span class="sep" aria-hidden="true">·</span><span class="en">Old tracks, new thoughts.</span></p>
       </div>
-      <h1 class="hero-title" id="hero-title">
-        <span class="sr">Tramline Tales.</span>
-        <span class="l1" data-hero-line aria-hidden="true"><span class="dv" lang="hi">ट</span><span class="en">ramline</span></span>
-        <span class="l2" data-hero-line aria-hidden="true"><span class="dv" lang="hi">ट</span><span class="en">ales</span></span>
-        <span class="bn" lang="bn" data-reveal>ট্রামলাইনের টুকিটাকি · Old tracks, new thoughts.</span>
-      </h1>
-      <div class="hero-foot">
-        <p class="hero-intro" data-reveal>Essays on marketing, brands and media, by {cfg.author}. Written from {cfg.stampPlace}, new every {cfg.days.slice(0, -1).join(', ')} and {cfg.days.at(-1)}.</p>
-        <a class="hero-latest" href={href(`tales/${latest.slug}/`)} data-reveal data-cursor="Read" data-wipe={latest.colour} data-wipe-to={latest.title} style={`--c:${latest.colour}`}>
-          <span class="mono" style="color:var(--c)">Latest · Tale No. {pad(latest.no)}</span>
-          <span class="t">{latest.title}</span>
-          <span class="board-cue mono"><i aria-hidden="true"></i>Board here</span>
-        </a>
-      </div>
+      <p class="hero-meta mono" data-reveal><span>Essays · Marketing · Brands · Media</span><span>Est. {shortDate(cfg.start)} · {cfg.stampPlace}</span></p>
     </div>
   </section>
 
-  <!-- MANIFESTO: the diary's motto, read word by word as you scroll -->
-  <section class="section wrap" aria-label="Motto">
-    <div class="eyebrow mono">Kindly note</div>
-    <div class="manifesto">
-      <p data-words>{mottoWords.map((w) => mottoEm.has(w) ? <><em class="w">{w}</em>{' '}</> : <><span class="w">{w}</span>{' '}</>)}</p>
-      <div class="sig mono"><Icon name="chai" />Served with kadak chai, three times a week</div>
-    </div>
+  <!-- THE SCOREBOARD: the newest tale, straight after the masthead -->
+  <section class="scoreboard" style={`--c:${latest.colour}`} aria-label="Latest tale">
+    <a class="wrap sb" href={href(`tales/${latest.slug}/`)} data-cursor="Read" data-wipe={latest.colour} data-wipe-to={latest.title}>
+      <span class="sb-meta mono" data-reveal><b>Latest · Tale No. {pad(latest.no)}</b><span>{shortDate(latest.date)}</span>{latest.tag && <span>{latest.tag}</span>}</span>
+      <span class="sb-title" data-reveal>{latest.title}</span>
+      <span class="sb-side" data-reveal>
+        <span class="sb-sum">{latest.summary}</span>
+        <span class="sb-cta mono">Board here <span aria-hidden="true">&rarr;</span></span>
+      </span>
+    </a>
   </section>
 
-  <!-- THE TALES -->
-  <section class="section wrap" id="tales" aria-labelledby="tales-title" style="padding-top:0">
+  <!-- THE LATEST THREE TALES -->
+  <section class="section wrap latest" id="tales" aria-labelledby="tales-title">
     <div class="tales-head">
-      <h2 id="tales-title" data-split>All tales<sup>({pad(tales.length)})</sup></h2>
-      <span class="mono" style="color:var(--muted)">Newest first</span>
+      <h2 id="tales-title" data-split>Latest tales</h2>
+      <span class="mono" style="color:var(--muted)">{pad(recent.length)} of {pad(tales.length)}</span>
     </div>
-    <ol class="tale-list" reversed>
-      {newestFirst.map((t, i) => (
-        <li class="tale-row" style={`--c:${t.colour}`} data-row={t.slug} data-reveal>
-          <a href={href(`tales/${t.slug}/`)} data-cursor="Read" data-wipe={t.colour} data-wipe-to={t.title}>
-            {t.cover && (
-              <span class="thumb"><span class="pinned" style={`--r:${lean[i % lean.length]}deg`}><Clip /><Image src={t.cover.image} alt="" widths={fit(t.cover.image.width, [480, 900])} sizes="86vw" loading="lazy" /></span></span>
-            )}
-            <span class="no mono">No. {pad(t.no)}</span>
-            <span class="t">{t.title}</span>
-            <span class="tag mono">{t.tag} · {t.minutes} min</span>
-            <span class="d mono"><time datetime={t.date}>{shortDate(t.date)}</time></span>
-            <span class="sum">{t.summary}</span>
-          </a>
-        </li>
-      ))}
-    </ol>
-    <div class="peek" aria-hidden="true" data-peek>
-      {newestFirst.map((t, i) => t.cover && (
-        <div class="pinned peek-card" data-peek-img={t.slug} style={`--c:${t.colour};--r:${lean[i % lean.length]}deg`}>
-          <Clip /><Image src={t.cover.image} alt="" widths={fit(t.cover.image.width, [400, 700])} sizes="340px" loading="lazy" />
-        </div>
-      ))}
-    </div>
+    <TaleList items={recent} />
+    <a class="archive-cta" href={href('tales/')} data-cursor="link">
+      <span class="mono">Next stop: the archive</span>
+      <span class="arr" aria-hidden="true">&rarr;</span>
+      <span class="mono count">{pad(tales.length)} {tales.length === 1 ? 'tale' : 'tales'}</span>
+    </a>
   </section>
 
-  <!-- POSTCARDS FROM THE LINE: every photograph, pinned and scrolled sideways -->
-  <section class="section postcards" aria-labelledby="pc-title" data-postcards>
-    <div class="wrap pc-head">
-      <h2 id="pc-title" data-split>Postcards from <em>the line</em></h2>
-      <p>Every picture that has ridden along so far, {allPhotos.length} of them. Each one stops at its own tale.</p>
-    </div>
-    <div class="pc-viewport">
-      <ul class="pc-track" role="list" data-pc-track>
-        {allPhotos.map((p, i) => (
-          <li class="pc" style={`--c:${p.tale.colour};--r:${tilt(i)}deg`}>
-            <a href={href(`tales/${p.tale.slug}/`)} data-cursor="Read" data-wipe={p.tale.colour} data-wipe-to={p.tale.title}>
-              <div class="card">
-                <Clip />
-                <div class="img"><Image src={p.image} alt={p.caption} widths={fit(p.image.width, [420, 800])} sizes="(max-width: 899px) 78vw, 26vw" loading="lazy" /></div>
-                <div class="cap">{p.caption}</div>
-              </div>
-              <div class="from mono"><b>No. {pad(p.tale.no)}</b><span>{p.tale.title.length > 34 ? p.tale.title.slice(0, 32).replace(/\s+\S*$/, '') + '…' : p.tale.title}</span></div>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <!-- DESTINATION BOARD -->
-  <div class="board" aria-hidden="true" data-board>
-    <div class="track">
-      {[0, 1].map(() => (
-        <div class="seq">
-          {stops.map((s, i) => (<><span class={i === 0 ? 'stop hl' : 'stop'}>{s}</span><Icon name="tram" /></>))}
-        </div>
-      ))}
-    </div>
-  </div>
-
-  <!-- ABOUT -->
+  <!-- ABOUT THE DIARY, AND THE DIARY AT A GLANCE -->
   <section class="section wrap about" id="about" aria-labelledby="about-title">
     <div>
       <div class="eyebrow mono">About the diary</div>
-      <h2 id="about-title" data-split>A notebook that rattles through the city of <em>brands.</em></h2>
+      <h2 id="about-title" data-split>Notes from the <em>window seat.</em></h2>
     </div>
     <div class="copy" data-reveal>
-      <p>{cfg.name} is where {cfg.author} writes about marketing, brands, media and the way we talk to one another, from {cfg.place}.</p>
-      <p>Every tale starts with something you have already seen: a ketchup bottle, a tram, a television soap. Then it asks what that thing is really selling, and to whom. Kindly take a window seat.</p>
-      <div class="facts mono">
-        <div><b>{pad(tales.length)}</b><span>Tales so far</span></div>
-        <div><b>{allPhotos.length}</b><span>Postcards</span></div>
-        <div><b>{cfg.days.map((d) => d.slice(0, 3)).join(' · ')}</b><span>Timetable</span></div>
+      <p>Some cities stay behind when you leave them. Kolkata doesn't. It follows you home in the rattle of tracks, the yellow flash of a taxi, the half-heard sales pitch from a television set. Tramline Tales lives somewhere in that afterglow, where ordinary things begin to look slightly more interesting.</p>
+      <p>These are notes from the window seat: brands behaving like stories, media behaving like memory, and marketing hiding in plain sight. Nothing here is too ordinary to question. Some stops are brief. Some thoughts stay with you long after the tram has moved on.</p>
+      <div class="facts" aria-label="At a glance">
+        <div><b>{pad(tales.length)}</b><span class="mono">{tales.length === 1 ? 'Tale' : 'Tales'}</span></div>
+        <div><b class="inf">&infin;</b><span class="mono">Takeaways</span></div>
       </div>
     </div>
+  </section>
+
+  <!-- KOLKATA BYLANES: five detours off the line -->
+  <section class="section wrap windows" aria-labelledby="win-title">
+    <div class="win-head">
+      <h2 id="win-title" data-split>Kolkata <em>Bylanes</em><span class="sub">five detours off the line</span></h2>
+      <p data-reveal>Not the postcard Kolkata. Five things this city keeps handing back to me, long after the tram has turned the corner.<br />No archive. No endless scroll. Just five.</p>
+    </div>
+    <ul class="win-grid" role="list">
+      {windows.map((w, i) => (
+        <li class={`win win-${i + 1}`} data-reveal>
+          <figure>
+            <Frame frame={w} widths={[400, 700, 1000]} sizes="(max-width: 760px) 50vw, 20vw" />
+            <figcaption><span class="mono">Bylane {pad(i + 1)}</span><b>{w.place}</b><span class="note">{w.note}</span></figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
   </section>
 </Base>
