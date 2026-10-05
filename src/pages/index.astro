@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Bridge from '../components/Bridge.astro';
 import TaleList from '../components/TaleList.astro';
 import Frame from '../components/Frame.astro';
+import Heartbeat from '../components/Heartbeat.astro';
 import { cfg, tales, newestFirst, href, absolute, shortDate, pad } from '../lib/site';
 import { windows } from '../lib/kolkata';
 
@@ -70,10 +71,7 @@ const jsonld = {
     <div class="copy" data-reveal>
       <p>Some cities stay behind when you leave them. Kolkata doesn't. It follows you home in the rattle of tracks, the yellow flash of a taxi, the half-heard sales pitch from a television set. Tramline Tales lives somewhere in that afterglow, where ordinary things begin to look slightly more interesting.</p>
       <p>These are notes from the window seat: brands behaving like stories, media behaving like memory, and marketing hiding in plain sight. Nothing here is too ordinary to question. Some stops are brief. Some thoughts stay with you long after the tram has moved on.</p>
-      <div class="facts" aria-label="At a glance">
-        <div><b>{pad(tales.length)}</b><span class="mono">{tales.length === 1 ? 'Tale' : 'Tales'}</span></div>
-        <div><b class="inf">&infin;</b><span class="mono">Takeaways</span></div>
-      </div>
+      <Heartbeat />
     </div>
   </section>
 

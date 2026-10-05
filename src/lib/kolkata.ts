@@ -30,8 +30,8 @@ export const windows: Frame[] = [
     'Book stalls stacked high on College Street', '50% 45%'),
 ];
 
-// the footer reuses two of the bylanes, cropped narrow
+// the two narrow arched frames beside "Still on the line" in the footer
 export const sides: Frame[] = [
-  frame('bonedi-pujo', 'Bonedi barir pujo', 'Five days of hope', 'Durga Puja in an old family courtyard', '50% 60%'),
-  frame('kadak-cha', 'Kadak cha', 'The first sip', 'Tea poured into a clay bhaar', '45% 45%'),
+  frame('letterboxes', 'Letterboxes', 'Names on the door', 'Old family letterboxes on a weathered North Kolkata wall beside a green door', '32% 50%'),
+  frame('rickshaw', 'Hand-pulled rickshaw', 'After the rain', 'A hand-pulled rickshaw on a wet North Kolkata lane', '55% 62%'),
 ];

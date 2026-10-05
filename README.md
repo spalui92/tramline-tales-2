@@ -50,11 +50,13 @@ The home page's "Kolkata Bylanes" (five photographs) and the two narrow frames i
 
 | File name | Where it appears |
 |---|---|
-| `kadak-cha` | Bylane 01, and the footer's right frame |
+| `kadak-cha` | Bylane 01 |
 | `yellow-taxi` | Bylane 02 |
-| `bonedi-pujo` | Bylane 03, and the footer's left frame |
+| `bonedi-pujo` | Bylane 03 |
 | `satyajit-ray` | Bylane 04 |
 | `college-street` | Bylane 05 |
+| `letterboxes` | Footer, left arched frame |
+| `rickshaw` | Footer, right arched frame |
 
 To swap a picture, upload a new file with the same name. Until a file is there, its slot shows a dark panel, so nothing breaks. The captions, and which part of each photo stays in frame, are set in `src/lib/kolkata.ts`.
 
