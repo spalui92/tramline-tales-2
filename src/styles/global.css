@@ -157,7 +157,7 @@ html.js.motion.first-visit .loader { display: grid; }
 .ticket .punch { position: absolute; right: 22px; bottom: 10px; display: flex; gap: 5px; }
 .ticket .punch i { display: block; box-sizing: content-box; width: 7px; height: 7px; border-radius: 50%; border: 5px solid var(--ink); transform: scale(0); }
 .ticket .punch i:nth-child(1) { background: #ff5f57; }
-.ticket .punch i:nth-child(2) { background: #febc2e; }
+.ticket .punch i:nth-child(2) { background: #3b82f6; }
 .ticket .punch i:nth-child(3) { background: #28c840; }
 .ticket .rule { border-top: 1px dashed rgba(12, 11, 9, 0.5); margin: 12px 0; }
 
