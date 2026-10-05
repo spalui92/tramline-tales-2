@@ -155,7 +155,7 @@ html.js.motion.first-visit .loader { display: grid; }
 /* three small window dots, bottom right of the ticket: close, minimise, maximise */
 .ticket { padding-bottom: 28px; }
 .ticket .punch { position: absolute; right: 22px; bottom: 10px; display: flex; gap: 5px; }
-.ticket .punch i { display: block; width: 8px; height: 8px; border-radius: 50%; transform: scale(0); }
+.ticket .punch i { display: block; box-sizing: border-box; width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--ink); transform: scale(0); }
 .ticket .punch i:nth-child(1) { background: #ff5f57; }
 .ticket .punch i:nth-child(2) { background: #febc2e; }
 .ticket .punch i:nth-child(3) { background: #28c840; }
