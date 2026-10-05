@@ -380,11 +380,14 @@ html.js.motion .beat .caret { display: block; animation: caret 0.9s steps(1) inf
 
 /* ---------- footer ---------- */
 .site-footer { position: relative; background: var(--ink-2); padding-top: 0; overflow: hidden; --brass: #c9a24a; }
-/* a laal paar border, as on a Puja saree */
-.laalpaar { height: 18px; background:
-  linear-gradient(var(--sindoor), var(--sindoor)) top / 100% 7px no-repeat,
-  repeating-linear-gradient(90deg, transparent 0 10px, rgba(246, 197, 49, 0.85) 10px 12px, transparent 12px 22px) 0 9px / 100% 4px no-repeat,
-  linear-gradient(var(--sindoor), var(--sindoor)) bottom / 100% 2px no-repeat; }
+/* the destination board: five Kolkata stops running in a loop; type scales from phone to desktop */
+.board { border-block: 1px solid var(--line); overflow: hidden; padding-block: clamp(14px, 2.2vw, 30px); background: var(--ink-2); }
+.board .track { display: flex; width: max-content; }
+.board .seq { display: flex; align-items: center; gap: clamp(18px, 3vw, 48px); padding-right: clamp(18px, 3vw, 48px); font-family: var(--f-display); font-size: clamp(26px, 4.6vw + 8px, 76px); line-height: 1; white-space: nowrap; }
+.board .seq .stop { color: var(--paper); }
+.board .seq .stop.hl { color: var(--taxi); font-style: italic; }
+.board .seq svg { width: clamp(34px, 5vw, 76px); color: var(--muted); flex: none; }
+html.reduced .board .track { transform: none !important; }
 
 /* still on the line: the four newest tales, between two Kolkata frames, zipped down the middle */
 .still { padding-block: clamp(56px, 7vw, 100px) clamp(40px, 5vw, 70px); }

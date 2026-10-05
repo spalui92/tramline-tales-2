@@ -205,6 +205,26 @@ function taleList() {
   list.addEventListener('mouseleave', () => imgs.forEach((im) => im.classList.remove('on')));
 }
 
+/* ---------- the destination board: runs on its own, faster and in step with the scroll ---------- */
+function board() {
+  const boardEl = $('[data-board]');
+  if (!boardEl || !motion) return;
+  const track = $('.track', boardEl)!;
+  const seq = $('.seq', boardEl)!;
+  let x = 0, dir = 1, visible = false;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(boardEl);
+  gsap.ticker.add((_, dt) => {
+    if (!visible) return;
+    const v = lenis ? lenis.velocity : 0;
+    if (Math.abs(v) > 0.5) dir = v > 0 ? 1 : -1;
+    x -= dir * (0.05 + Math.min(Math.abs(v) * 0.02, 0.9)) * dt;
+    const w = seq.offsetWidth;
+    if (x <= -w) x += w;
+    if (x > 0) x -= w;
+    track.style.transform = `translate3d(${x}px,0,0)`;
+  });
+}
+
 /* ---------- about: "Kolkata has a heartbeat of its own." ---------- */
 // As the reader scrolls, the line is typed letter by letter with the cursor moving
 // along; then a tram rides the overhead wire through a heartbeat blip, and a heart
@@ -370,6 +390,7 @@ tale();
 taleList();
 zipper();
 heartbeat();
+board();
 const ready = boardTicket().then(arrive);
 ready.then(() => {
   hero();
