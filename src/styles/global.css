@@ -194,6 +194,28 @@ html.js.arriving .wipe { visibility: visible; }
 .kicker { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 14px; margin: clamp(12px, 1.6vh, 18px) 0 0; line-height: 1.25; }
 /* Upright, regular-weight Bengali (no italics, no bold) */
 .kicker .bn { font-family: var(--f-bn); font-size: clamp(18px, 1.45vw, 22px); line-height: 1.2; color: var(--paper); font-style: normal; font-weight: 400; }
+/* ink dropped in water: white, red and yellow bleed slowly into one another inside the letters */
+.kicker .bn {
+  background-image:
+    radial-gradient(circle at 20% 40%, #ef4b36 0 14%, transparent 46%),
+    radial-gradient(circle at 78% 60%, #f6c531 0 14%, transparent 46%),
+    radial-gradient(circle at 50% 30%, #f1e9d6 0 18%, transparent 52%),
+    radial-gradient(circle at 35% 85%, #f6c531 0 8%, transparent 40%),
+    linear-gradient(90deg, #f1e9d6, #ef4b36, #f6c531, #f1e9d6);
+  background-size: 260% 260%, 240% 240%, 280% 280%, 220% 220%, 100% 100%;
+  background-position: 0% 30%, 100% 70%, 50% 0%, 20% 100%, 0 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: inkBleed 16s ease-in-out infinite alternate;
+}
+@keyframes inkBleed {
+  0%   { background-position: 0% 30%, 100% 70%, 50% 0%, 20% 100%, 0 0; }
+  33%  { background-position: 60% 80%, 30% 20%, 100% 60%, 80% 10%, 0 0; }
+  66%  { background-position: 100% 40%, 0% 90%, 10% 100%, 40% 60%, 0 0; }
+  100% { background-position: 40% 100%, 70% 0%, 70% 30%, 100% 40%, 0 0; }
+}
+@media (prefers-reduced-motion: reduce) { .kicker .bn { animation: none; } }
 .kicker .sep { color: var(--accent); }
 .kicker .en { font-family: var(--f-mono); font-size: clamp(11px, 0.9vw, 13px); letter-spacing: 0.22em; text-transform: uppercase; color: var(--paper-dim); }
 
