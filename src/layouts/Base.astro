@@ -9,7 +9,7 @@ interface Props {
   description?: string;
   image?: string;
   accent?: string;
-  page: 'home' | 'tale' | 'lost';
+  page: 'home' | 'tale' | 'archive' | 'lost';
   article?: { date: string; tag: string };
   wire?: boolean;
   jsonld?: object;
@@ -64,10 +64,10 @@ const favicon = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www
 )}
 <header class="site-header">
   <a class="brand" href={href()} data-cursor="link" aria-label={`${cfg.name}, home`}>
-    <Icon name="tram" class="brand-tram" /><span class="stack"><span class="w1">Tramline</span><span class="w2">Tales</span></span><span class="bn" lang="bn">ট্রামলাইনের টুকিটাকি</span>
+    <Icon name="tram" class="brand-tram" /><span class="stack"><span class="w1">Tramline</span><span class="w2">Tales</span></span>
   </a>
   <nav class="nav mono" aria-label="Main">
-    <a href={href('#tales')} data-cursor="link">Tales ({pad(tales.length)})</a>
+    <a href={href('tales/')} data-cursor="link">Tales ({pad(tales.length)})</a>
     <a href={href('#about')} data-cursor="link">About</a>
     <span class="clock" data-clock>{cfg.stampPlace}</span>
   </nav>

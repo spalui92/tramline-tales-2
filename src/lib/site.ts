@@ -157,6 +157,3 @@ export function href(path = '') {
 export function absolute(path = '') {
   return cfg.siteUrl.replace(/\/$/, '') + '/' + path.replace(/^\//, '');
 }
-
-export const allPhotos = tales.flatMap((t) =>
-  t.body.filter((b): b is Extract<Block, { t: 'img' }> => b.t === 'img').map((b) => ({ ...b, tale: t })));

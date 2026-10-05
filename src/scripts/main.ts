@@ -181,15 +181,8 @@ function hero() {
 
   // on the way out, the title lifts away and the bridge settles into the river haze
   gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
-    .to('.hero-title', { yPercent: -28, opacity: 0.15, ease: 'none' }, 0)
-    .to('.hero .bridge:not(.mirror)', { yPercent: 12, scale: 1.08, ease: 'none' }, 0)
-    .to('.hero-foot', { yPercent: -60, opacity: 0, ease: 'none' }, 0);
-}
-
-function manifesto() {
-  const p = $('[data-words]');
-  if (!p || !motion) return;
-  gsap.to($$('.w', p), { opacity: 1, ease: 'none', stagger: 0.1, scrollTrigger: { trigger: p, start: 'top 80%', end: 'bottom 50%', scrub: true } });
+    .to('.masthead', { yPercent: -18, opacity: 0.35, ease: 'none' }, 0)
+    .to('.hero .bridge:not(.mirror)', { yPercent: 10, scale: 1.06, ease: 'none' }, 0);
 }
 
 function taleList() {
@@ -210,57 +203,17 @@ function taleList() {
   list.addEventListener('mouseleave', () => imgs.forEach((im) => im.classList.remove('on')));
 }
 
-function postcards() {
-  const section = $('[data-postcards]');
-  const track = $('[data-pc-track]');
-  if (!section || !track || !motion) return;
-  const mm = gsap.matchMedia();
-  mm.add('(min-width: 900px)', () => {
-    const dist = () => Math.max(0, track.scrollWidth - innerWidth);
-    const slide = gsap.to(track, {
-      x: () => -dist(), ease: 'none',
-      scrollTrigger: { trigger: section, start: 'top top', end: () => '+=' + dist(), pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1 },
-    });
-    // each postcard sways a little as it passes, like it is pinned to a moving board
-    $$('.pc .card', track).forEach((card) => {
-      gsap.fromTo(card, { y: 24, rotate: '+=3' }, {
-        y: -12, rotate: '-=3', ease: 'none',
-        scrollTrigger: { trigger: card, containerAnimation: slide, start: 'left right', end: 'right left', scrub: true },
-      });
-    });
+/* ---------- footer: the zipper closes as "Still on the line" arrives ---------- */
+function zipper() {
+  const board = $('[data-zip]');
+  const zip = board && $('.zipper', board);
+  if (!board || !zip || !motion) return;
+  const state = { v: 0 };
+  ScrollTrigger.create({
+    trigger: board, start: 'top 85%', end: 'bottom 75%', scrub: 0.6,
+    onUpdate: (self) => { state.v = self.progress; zip.style.setProperty('--zip', state.v.toFixed(3)); },
   });
-}
-
-function board() {
-  const boardEl = $('[data-board]');
-  if (!boardEl || !motion) return;
-  const track = $('.track', boardEl)!;
-  const seq = $('.seq', boardEl)!;
-  let x = 0, dir = 1, visible = false;
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(boardEl);
-  gsap.ticker.add((_, dt) => {
-    if (!visible) return;
-    const v = lenis ? lenis.velocity : 0;
-    if (Math.abs(v) > 0.5) dir = v > 0 ? 1 : -1;
-    x -= dir * (0.05 + Math.min(Math.abs(v) * 0.02, 0.9)) * dt;
-    const w = seq.offsetWidth;
-    if (x <= -w) x += w;
-    if (x > 0) x -= w;
-    track.style.transform = `translate3d(${x}px,0,0)`;
-  });
-}
-
-function wordmark() {
-  const el = $('[data-wordmark]');
-  if (!el) return;
-  const fit = () => {
-    el.style.fontSize = '';
-    const fs = parseFloat(getComputedStyle(el).fontSize);
-    el.style.fontSize = (fs * (el.parentElement!.clientWidth * 1.0) / el.scrollWidth) + 'px';
-  };
-  document.fonts.ready.then(() => { fit(); ScrollTrigger.refresh(); });
-  addEventListener('resize', fit);
-  if (motion) gsap.from(el, { yPercent: 45, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom bottom', scrub: true } });
+  zip.style.setProperty('--zip', '0');
 }
 
 /* ---------- a tale ---------- */
@@ -354,13 +307,10 @@ function cursor() {
 cursor();
 tale();
 taleList();
-wordmark();
-board();
+zipper();
 const ready = boardTicket().then(arrive);
 ready.then(() => {
   hero();
   reveals();
-  manifesto();
-  postcards();
   ScrollTrigger.refresh();
 });

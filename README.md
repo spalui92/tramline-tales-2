@@ -44,6 +44,22 @@ Special lines inside an article:
 
 3. Commit the file. GitHub rebuilds and republishes the site in about two minutes.
 
+## The Kolkata photographs
+
+The home page's "Five windows from the line" and the two narrow frames in the footer ("Still on the line") use photographs kept in `images/kolkata/`. Each slot looks for a file with a fixed name (`.jpg`, `.jpeg`, `.png` or `.webp`):
+
+| File name | Where it appears |
+|---|---|
+| `howrah-bridge` | Window 01, the large one (shown in black and white) |
+| `victoria-memorial` | Window 02 |
+| `prinsep-ghat` | Window 03 |
+| `new-market` | Window 04 |
+| `yellow-taxi` | Window 05 |
+| `line-left` | Footer, left frame (College Street) |
+| `line-right` | Footer, right frame (Kumartuli) |
+
+To swap a picture, upload a new file with the same name. Until a file is there, its slot shows a dark dusk panel with the place name, so nothing breaks. Captions are set in `src/lib/kolkata.ts`.
+
 ## Change the site's name or details
 
 Edit `config.json`: `name`, `author`, `initials`, `place`, `stampPlace`, `start`, `days` (publishing days), `motto` (shown on the home page), `description` and `siteUrl` (the site's address).
