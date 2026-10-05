@@ -60,11 +60,11 @@ const showArchiveCard = still.length < 4;
     </div>
     <div>
       <h3 class="mono">Timetable</h3>
-      <p>{cfg.days.join(' · ')}</p>
+      <p><span class="days-full">{cfg.days.join(' · ')}</span><span class="days-short">{cfg.days.map((d) => d.slice(0, 3)).join(' · ')}</span></p>
     </div>
     <div>
       <h3 class="mono">Depot</h3>
-      <p>{cfg.place}<br /><a class="ulink" href={href('rss.xml')} data-cursor="link">RSS feed</a></p>
+      <p><span class="place">{cfg.place}</span><br /><a class="ulink" href={href('rss.xml')} data-cursor="link">RSS feed</a></p>
     </div>
     <div class="to-top-wrap">
       <button class="to-top mono" type="button" data-to-top data-cursor="link"><Icon name="rickshaw" />Pull back to the top</button>
