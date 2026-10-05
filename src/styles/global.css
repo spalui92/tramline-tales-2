@@ -534,7 +534,13 @@ html.reduced .board .track { transform: none !important; }
   .nav .short { display: inline; }
   .nav .about-link { display: none; }
 }
-@media (max-width: 380px) { .brand .stack { display: none; } }
+@media (max-width: 420px) {
+  .brand { gap: 8px; }
+  .brand-tram { width: 28px; }
+  .brand .w1 { font-size: 12.5px; }
+  .brand .w2 { font-size: 22px; margin-left: 1.2em; }
+}
+@media (max-width: 330px) { .brand .stack { display: none; } }
 
 /* "also running": a single line under the scoreboard, one link per branch line */
 .also { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin: 0 auto; padding-block: 0 clamp(20px, 2.4vw, 30px); color: var(--muted); font-size: 12px; }
@@ -601,15 +607,16 @@ html.reduced .board .track { transform: none !important; }
 
 /* a zipper rule between the scoreboard and "Also running": it zips across as you arrive */
 @property --zh { syntax: '<number>'; inherits: true; initial-value: 1; }
-.zip-rule { --brass: #c9a24a; --zh: 1; position: relative; height: 26px; margin: clamp(2px, 0.6vw, 8px) auto clamp(14px, 1.8vw, 22px); transition: --zh 1.4s var(--ease-out); }
+/* a thin strip of tram track; a little tram rolls along it and rings its bell at the end */
+.zip-rule { --zh: 1; position: relative; height: 22px; margin: clamp(2px, 0.6vw, 8px) auto clamp(14px, 1.8vw, 22px); transition: --zh 2.2s var(--ease-out); }
 .zip-rule.pre { --zh: 0; }
-.zip-rule .zr-teeth { position: absolute; left: var(--gutter); right: var(--gutter); top: 4px; height: 18px; border-radius: 2px;
-  background:
-    repeating-linear-gradient(to right, var(--brass) 0 3px, transparent 3px 7px) 0 3px / 100% 6px no-repeat,
-    repeating-linear-gradient(to right, transparent 0 3.5px, var(--brass) 3.5px 6.5px, transparent 6.5px 7px) 0 9px / 100% 6px no-repeat,
-    linear-gradient(#211d17, #211d17);
-  clip-path: inset(0 calc((1 - var(--zh)) * 100%) 0 0); }
-.zip-rule .zr-pull { position: absolute; top: 1px; width: 52px; height: 24px; max-width: none; color: var(--brass); left: calc(var(--gutter) + var(--zh) * (100% - 2 * var(--gutter) - 52px)); }
+.zip-rule .zr-track { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 2px; height: 7px;
+  border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong);
+  background: repeating-linear-gradient(90deg, var(--line-strong) 0 1px, transparent 1px 11px); opacity: 0.9; }
+.zip-rule .zr-tram { position: absolute; bottom: 7px; width: 34px; max-width: none; color: var(--accent);
+  left: calc(var(--gutter) + var(--zh) * (100% - 2 * var(--gutter) - 34px)); }
+.zip-rule .zr-ting { position: absolute; left: var(--gutter); top: 2px; font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--muted); opacity: calc((var(--zh) - 0.8) * 5); }
 @media (prefers-reduced-motion: reduce) { .zip-rule { transition: none; } }
 
 /* a depot file or notice reads exactly like a tale; only its colour and number set it apart */
