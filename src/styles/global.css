@@ -356,6 +356,10 @@ html.js.motion .beat .caret { display: block; animation: caret 0.9s steps(1) inf
 .win-head h2 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: clamp(40px, 5.4vw, 88px); line-height: 0.9; letter-spacing: -0.025em; }
 .win-head h2 em { color: var(--accent); }
 .win-head h2 .sub { display: block; margin-top: 0.3em; font-size: max(0.36em, 17px); font-style: italic; letter-spacing: 0; color: var(--paper-dim); }
+/* the line mask the heading rises through is only one line-height tall, which docks the tail of the y in Bylanes.
+   Give every line except the last room below it (padding opens the clip, the negative margin keeps the layout exactly as it was);
+   the subtitle comes later in the page, so it paints on top of the tail. */
+.win-head h2 > div:not(:last-child) { padding-bottom: 0.26em; margin-bottom: -0.26em; }
 /* the intro sits under the heading, on a yellow accent bar; its second line starts after a blank row */
 /* the bar is a little stretch of NH: two white road edges with the dashed yellow centre line between them */
 .win-intro { --road: 10px; max-width: 58ch; padding: 2px 0 2px calc(var(--road) + clamp(14px, 1.4vw, 20px));
