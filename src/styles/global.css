@@ -185,6 +185,15 @@ html.js.arriving .wipe { visibility: visible; }
 .kicker .bn { font-family: var(--f-bn); font-size: clamp(18px, 1.45vw, 22px); line-height: 1.2; color: var(--paper); }
 .kicker .sep { color: var(--accent); }
 .kicker .en { font-family: var(--f-mono); font-size: clamp(11px, 0.9vw, 13px); letter-spacing: 0.22em; text-transform: uppercase; color: var(--paper-dim); }
+/* the highway behind the masthead: phones only, faded well into the background */
+.highway { display: none; }
+@media (max-width: 720px) {
+  .highway { display: block; position: absolute; left: 0; right: 0; top: 50%; bottom: 0; width: 100%; height: 50%; z-index: 0; max-width: none; pointer-events: none; opacity: 0.32;
+    -webkit-mask: linear-gradient(to bottom, transparent 0%, #000 22%, #000 72%, transparent 100%); mask: linear-gradient(to bottom, transparent 0%, #000 22%, #000 72%, transparent 100%); }
+  .highway .edge { stroke: var(--paper); stroke-width: 1.2; fill: none; vector-effect: non-scaling-stroke; }
+  .highway .lane { fill: var(--paper); opacity: 0.55; }
+  .highway .mid { fill: var(--taxi); }
+}
 /* phones: the bridge rides high, and the masthead and kicker form one centred lockup on the water */
 @media (max-width: 720px) {
   .hero { height: clamp(480px, 64svh, 600px); }
@@ -198,7 +207,7 @@ html.js.arriving .wipe { visibility: visible; }
   .hero-title .l2 { padding-left: 0; }
   .kicker { flex-direction: column; align-items: center; gap: 9px; margin: 18px 0 0; }
   .kicker .bn { font-size: 23px; }
-  .kicker .sep { display: block; width: 28px; height: 1px; background: var(--accent); font-size: 0; }
+  .kicker .sep { display: none; }
   .kicker .en { font-size: 10.5px; letter-spacing: 0.28em; }
 }
 
@@ -307,7 +316,7 @@ html.js.motion .beat .caret { display: block; animation: caret 0.9s steps(1) inf
 /* lub-dub, like a tram bell's ding-ding */
 .beat-wire .heart.beating { animation: lubdub 1.6s ease-in-out infinite; filter: drop-shadow(0 0 4px rgba(239, 75, 54, 0.55)); }
 @keyframes lubdub { 0%, 46%, 100% { transform: scale(1); } 10% { transform: scale(1.16); } 20% { transform: scale(1); } 30% { transform: scale(1.1); } }
-.beat figcaption { margin-top: 5px; font-size: 10px; letter-spacing: 0.12em; color: var(--muted); text-align: right; }
+.beat figcaption { margin-top: 5px; font-size: 8.5px; letter-spacing: 0.08em; color: var(--muted); text-align: right; }
 /* phones: the heartbeat a touch wider, the credit tighter, so it always stays the smaller of the two */
 @media (max-width: 760px) {
   .beat-wire { width: 140px; }

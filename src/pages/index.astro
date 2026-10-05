@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Bridge from '../components/Bridge.astro';
+import Highway from '../components/Highway.astro';
 import TaleList from '../components/TaleList.astro';
 import Frame from '../components/Frame.astro';
 import Heartbeat from '../components/Heartbeat.astro';
@@ -23,6 +24,7 @@ const jsonld = {
     <canvas class="river" aria-hidden="true" data-river></canvas>
     <Bridge class="bridge" />
     <Bridge class="bridge mirror" mirror />
+    <Highway />
     <div class="hero-inner">
       <div class="masthead">
         <h1 class="hero-title" id="hero-title">
