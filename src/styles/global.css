@@ -581,6 +581,26 @@ html.reduced .board .track { transform: none !important; }
 .routes-head h2 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: clamp(40px, 5vw, 80px); line-height: 0.92; letter-spacing: -0.02em; }
 .routes-head h2 em { color: var(--accent); }
 .routes-head p { max-width: 58ch; margin: 18px 0 0; color: var(--paper-dim); font-size: clamp(16px, 1.2vw, 19px); line-height: 1.55; text-wrap: pretty; }
+/* the podium: order of preference, Tales > Depot Files > Notice Board. Sits in the right of the header */
+.routes-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); align-items: end; gap: clamp(28px, 4vw, 72px); }
+.rm-podium { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: clamp(6px, 0.8vw, 12px); }
+.rm-pod { --c: var(--accent); min-width: 0; }
+.rm-pod-link { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.rm-placard { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px 11px; background: var(--paper); color: var(--ink); border-bottom: 3px solid var(--c); box-shadow: 0 18px 30px -18px rgba(0, 0, 0, 0.9); transition: transform 0.5s var(--ease-out); }
+.rm-pod-1 .rm-placard { transform: rotate(-1.2deg); }
+.rm-pod-2 .rm-placard { transform: rotate(1deg); }
+.rm-pod-3 .rm-placard { transform: rotate(-0.8deg); }
+.rm-placard-no { font-size: 10.5px; letter-spacing: 0.14em; color: #5b5448; }
+.rm-placard-name { font-family: var(--f-display); font-weight: 400; font-size: clamp(20px, 1.9vw, 28px); line-height: 0.98; letter-spacing: -0.01em; }
+.rm-box { position: relative; display: grid; place-items: start center; padding-top: 14px; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 26%, var(--ink)), color-mix(in srgb, var(--c) 8%, var(--ink))); border: 1px solid var(--c); border-bottom: 0; }
+.rm-box::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--c); }
+.rm-box-n { font-family: var(--f-display); font-size: clamp(44px, 5vw, 76px); line-height: 0.9; color: var(--c); }
+.rm-pod-1 .rm-box { height: clamp(150px, 15vw, 220px); }
+.rm-pod-2 .rm-box { height: clamp(110px, 11vw, 160px); }
+.rm-pod-3 .rm-box { height: clamp(78px, 7.6vw, 112px); }
+@media (hover: hover) { .rm-pod-link:hover .rm-placard { transform: translateY(-6px) rotate(0deg); } }
+@media (max-width: 900px) { .routes-head { grid-template-columns: 1fr; } .rm-podium { max-width: 520px; margin-top: 8px; } }
+
 .rm-lines { list-style: none; margin: clamp(28px, 3.4vw, 52px) 0 0; padding: 0; border-top: 1px solid var(--line); }
 .rm-line { --c: var(--accent); position: relative; display: grid; grid-template-columns: minmax(150px, 230px) minmax(0, 1fr); align-items: center; gap: 14px clamp(20px, 3vw, 48px); padding-block: clamp(22px, 2.6vw, 36px); border-bottom: 1px solid var(--line); }
 .rm-name { display: flex; flex-direction: column; gap: 6px; }

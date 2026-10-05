@@ -17,9 +17,27 @@ const lines = KINDS.map((k, i) => {
 ---
 <section class="section wrap routes" id="routes" aria-labelledby="routes-title">
   <div class="routes-head">
-    <div class="eyebrow mono">The route map</div>
-    <h2 id="routes-title" data-split>Three lines, <em>one depot.</em></h2>
-    <p data-reveal>Tales are the main line. Two branches run off it: campaign teardowns taken apart in the depot, and notices pinned up the way a company would. Every dot is a stop you can get off at.</p>
+    <div class="rm-head-copy">
+      <div class="eyebrow mono">The route map</div>
+      <h2 id="routes-title" data-split>Three lines, <em>one depot.</em></h2>
+      <p data-reveal>Tales are the main line. Two branches run off it: campaign teardowns taken apart in the depot, and notices pinned up the way a company would. Every dot is a stop you can get off at.</p>
+    </div>
+    <ol class="rm-podium" role="list" aria-label="Order of preference: Tales first, Depot Files second, Notice Board third" data-reveal>
+      {[lines[1], lines[0], lines[2]].map((l) => {
+        const rank = l.k === 'tale' ? 1 : l.k === 'depot' ? 2 : 3;
+        return (
+          <li class={`rm-pod rm-pod-${rank}`} style={`--c:${l.colour}`}>
+            <a class="rm-pod-link" href={href(`${l.sec.dir}/`)} data-cursor="link">
+              <span class="rm-placard">
+                <span class="mono rm-placard-no">Box No. {rank}</span>
+                <b class="rm-placard-name">{l.sec.label}</b>
+              </span>
+              <span class="rm-box" aria-hidden="true"><span class="rm-box-n">{rank}</span></span>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
   </div>
   <ol class="rm-lines" role="list">
     {lines.map((l) => (
