@@ -7,7 +7,7 @@
 @import '@fontsource/nanum-pen-script/latin-400.css';
 @import '@fontsource/special-elite/latin-400.css';
 @import '@fontsource/imperial-script/latin-400.css';
-@import '@fontsource/noto-serif-bengali/bengali-400.css';
+@import '@fontsource/galada/bengali-400.css';
 @import '@fontsource/tiro-devanagari-hindi/devanagari-400.css';
 @import '@fontsource/tiro-devanagari-hindi/devanagari-400-italic.css';
 @import 'lenis/dist/lenis.css';
@@ -31,7 +31,7 @@
   --f-body: 'Newsreader Variable', Georgia, serif;
   --f-mono: 'Courier Prime', 'Courier New', monospace;
   --f-hand: 'Nanum Pen Script', 'Segoe Print', cursive;
-  --f-bn: 'Noto Serif Bengali', serif;
+  --f-bn: 'Galada', 'Noto Sans Bengali', sans-serif;
 
   --gutter: clamp(16px, 2.6vw, 40px);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -181,17 +181,25 @@ html.js.arriving .wipe { visibility: visible; }
 .hero-title .l2 { display: block; padding-left: 0.62em; font-style: italic; color: var(--accent); }
 /* the Bengali and English kicker: the last line of the photograph, sitting on the scoreboard's edge */
 .kicker { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: clamp(12px, 1.6vh, 18px) 0 0 0.1em; line-height: 1.25; }
-.kicker .bn { font-family: var(--f-bn); font-size: clamp(15px, 1.2vw, 18px); color: var(--paper); }
+/* Galada: hand-lettered Bengali, like an old Kolkata signboard */
+.kicker .bn { font-family: var(--f-bn); font-size: clamp(18px, 1.45vw, 22px); line-height: 1.2; color: var(--paper); }
 .kicker .sep { color: var(--accent); }
 .kicker .en { font-family: var(--f-mono); font-size: clamp(11px, 0.9vw, 13px); letter-spacing: 0.22em; text-transform: uppercase; color: var(--paper-dim); }
+/* phones: the bridge rides high, and the masthead and kicker form one centred lockup on the water */
 @media (max-width: 720px) {
-  .hero { height: clamp(420px, 60svh, 560px); }
-  .hero .bridge { left: 50%; bottom: 46%; width: 186vw; }
-  .hero .bridge.mirror { top: 54%; }
-  .hero::after { height: 56%; }
+  .hero { height: clamp(480px, 64svh, 600px); }
+  .hero .bridge { left: 50%; bottom: 50%; width: 186vw; }
+  .hero .bridge.mirror { top: 50%; }
+  .hero::after { height: 62%; }
   .hero-meta { display: none; }
-  .kicker { flex-direction: column; gap: 6px; }
-  .kicker .sep { display: none; }
+  .hero-inner { justify-content: center; padding-bottom: 24px; }
+  .masthead { width: 100%; text-align: center; }
+  .hero-title { font-size: clamp(48px, 14.4vw, 56px); }
+  .hero-title .l2 { padding-left: 0; }
+  .kicker { flex-direction: column; align-items: center; gap: 9px; margin: 18px 0 0; }
+  .kicker .bn { font-size: 23px; }
+  .kicker .sep { display: block; width: 28px; height: 1px; background: var(--accent); font-size: 0; }
+  .kicker .en { font-size: 10.5px; letter-spacing: 0.28em; }
 }
 
 /* the desi ट: as tall as a capital, on the baseline, in sindoor (hero masthead and footer signature) */
@@ -300,6 +308,11 @@ html.js.motion .beat .caret { display: block; animation: caret 0.9s steps(1) inf
 .beat-wire .heart.beating { animation: lubdub 1.6s ease-in-out infinite; filter: drop-shadow(0 0 4px rgba(239, 75, 54, 0.55)); }
 @keyframes lubdub { 0%, 46%, 100% { transform: scale(1); } 10% { transform: scale(1.16); } 20% { transform: scale(1); } 30% { transform: scale(1.1); } }
 .beat figcaption { margin-top: 5px; font-size: 10px; letter-spacing: 0.12em; color: var(--muted); text-align: right; }
+/* phones: the heartbeat a touch wider, the credit tighter, so it always stays the smaller of the two */
+@media (max-width: 760px) {
+  .beat-wire { width: 140px; }
+  .beat figcaption { font-size: 8.5px; letter-spacing: 0.06em; }
+}
 .beat cite { font-style: normal; color: var(--paper-dim); }
 @media (max-width: 860px) { .about { grid-template-columns: 1fr; } }
 

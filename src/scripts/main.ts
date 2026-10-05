@@ -245,7 +245,21 @@ function heartbeat() {
     heart.classList.toggle('beating', inked >= 1);
   };
   update(0);
-  ScrollTrigger.create({ trigger: fig, start: 'top 82%', end: 'bottom 42%', onUpdate: (self) => update(self.progress), onRefresh: (self) => update(self.progress) });
+  // On phones a quick flick of the thumb would otherwise jump straight to the end. There the
+  // drawing follows the scroll at a steady typewriter pace instead: never faster than the
+  // whole line, wire and heart in about 3.6 seconds, catching up to wherever you have scrolled.
+  const steady = matchMedia('(max-width: 760px)').matches;
+  let target = 0, shownAt = 0;
+  if (steady) {
+    gsap.ticker.add((_, dt) => {
+      if (shownAt === target) return;
+      const step = Math.min(Math.abs(target - shownAt), dt / 1000 / 3.6);
+      shownAt += Math.sign(target - shownAt) * step;
+      update(shownAt);
+    });
+  }
+  const follow = (p: number) => { target = p; if (!steady) update(p); };
+  ScrollTrigger.create({ trigger: fig, start: 'top 82%', end: 'bottom 42%', onUpdate: (self) => follow(self.progress), onRefresh: (self) => follow(self.progress) });
 }
 
 /* ---------- footer: the zipper closes as "Still on the line" arrives ---------- */
