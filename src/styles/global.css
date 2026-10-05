@@ -343,6 +343,11 @@ html.js.motion .beat .caret { display: block; animation: caret 0.9s steps(1) inf
 .win-intro { max-width: 58ch; border-left: 2px solid var(--accent); padding: 2px 0 2px clamp(14px, 1.4vw, 20px); color: var(--paper-dim); font-size: clamp(16px, 1.15vw, 18px); line-height: 1.55; }
 .win-intro p { margin: 0; }
 .win-intro p + p { margin-top: 1.55em; color: var(--paper); }
+/* desktop: the intro stands beside the heading on the right, right-aligned, its accent bar on the right edge */
+@media (min-width: 761px) {
+  .win-head { flex-direction: row; justify-content: space-between; align-items: end; gap: 40px; }
+  .win-intro { max-width: 46ch; text-align: right; border-left: 0; border-right: 2px solid var(--accent); padding: 2px clamp(14px, 1.4vw, 20px) 2px 0; }
+}
 .win-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(12px, 1.4vw, 22px); align-items: start; }
 /* every other window sits a little lower, like a row of windows seen from a passing tram */
 .win:nth-child(even) { margin-top: clamp(18px, 2.6vw, 44px); }
