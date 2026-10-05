@@ -152,7 +152,13 @@ html.js.motion.first-visit .loader { display: grid; }
 .ticket .row { display: flex; justify-content: space-between; font-size: 11px; }
 .ticket .big { font-family: var(--f-display); text-transform: none; font-size: 44px; line-height: 1; letter-spacing: 0; margin: 14px 0 10px; }
 .ticket .count { font-size: 30px; font-weight: 700; letter-spacing: 0.1em; font-variant-numeric: tabular-nums; }
-.ticket .punch { position: absolute; right: 26px; bottom: 22px; width: 16px; height: 16px; border-radius: 50%; background: var(--ink); transform: scale(0); }
+/* three small window dots, bottom right of the ticket: close, minimise, maximise */
+.ticket { padding-bottom: 28px; }
+.ticket .punch { position: absolute; right: 22px; bottom: 10px; display: flex; gap: 5px; }
+.ticket .punch i { display: block; width: 8px; height: 8px; border-radius: 50%; transform: scale(0); }
+.ticket .punch i:nth-child(1) { background: #ff5f57; }
+.ticket .punch i:nth-child(2) { background: #febc2e; }
+.ticket .punch i:nth-child(3) { background: #28c840; }
 .ticket .rule { border-top: 1px dashed rgba(12, 11, 9, 0.5); margin: 12px 0; }
 
 /* ---------- page wipe between pages ---------- */

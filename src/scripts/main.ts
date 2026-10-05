@@ -115,7 +115,7 @@ function boardTicket(): Promise<void> {
     const tl = gsap.timeline({ onComplete: () => { loader.remove(); root.classList.remove('first-visit'); } });
     tl.from(ticket, { yPercent: 50, rotate: -8, opacity: 0, duration: 0.9, ease: 'expo.out' })
       .to(n, { v: total, duration: 0.9, ease: 'power2.out', onUpdate: () => { count.textContent = pad(n.v, 3); } }, '-=0.3')
-      .to(punch, { scale: 1, duration: 0.25, ease: 'back.out(3)' }, '+=0.1')
+      .to(punch.children, { scale: 1, duration: 0.25, ease: 'back.out(3)', stagger: 0.09 }, '+=0.1')
       .to(ticket, { yPercent: -40, rotate: 5, opacity: 0, duration: 0.6, ease: 'power3.in' }, '+=0.3')
       .to(loader, { clipPath: 'inset(0% 0% 100% 0%)', duration: 1, ease: 'expo.inOut' }, '-=0.25')
       .add(() => resolve(), '-=0.7');
