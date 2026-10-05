@@ -1,0 +1,54 @@
+---
+// The route map: three lines running out of the depot, one stop for every piece published.
+// Tales is the main line; Depot Files and the Notice Board are branches. A line with nothing
+// on it yet shows a dashed track and its next stop. Plain links, no script.
+import Icon from './Icon.astro';
+import { SECTIONS, KINDS, COLOURS, byKind, href, pad } from '../lib/site';
+
+const MAX = 7; // stops drawn per line; older ones fold into a "+N earlier" stop
+const lines = KINDS.map((k, i) => {
+  const sec = SECTIONS[k];
+  const all = byKind(k);
+  const shown = all.slice(-MAX);
+  const colour = k === 'tale' ? COLOURS.sindoor.hex : COLOURS[sec.defaultColour].hex;
+  return { k, sec, all, shown, hidden: all.length - shown.length, colour, no: i + 1 };
+});
+---
+<section class="section wrap routes" id="routes" aria-labelledby="routes-title">
+  <div class="routes-head">
+    <div class="eyebrow mono">The route map</div>
+    <h2 id="routes-title" data-split>Three lines, <em>one depot.</em></h2>
+    <p data-reveal>Tales are the main line. Two branches run off it: campaign teardowns taken apart in the depot, and notices pinned up the way a company would. Every dot is a stop you can get off at.</p>
+  </div>
+  <ol class="lines" role="list">
+    {lines.map((l) => (
+      <li class={`line line-${l.k}${l.all.length === 0 ? ' is-empty' : ''}`} style={`--c:${l.colour}`} data-reveal>
+        <a class="line-name" href={href(`${l.sec.dir}/`)} data-cursor="link">
+          <span class="mono ln">Line {pad(l.no)}</span>
+          <b>{l.sec.label}</b>
+          <span class="mono lc">{pad(l.all.length)} {l.all.length === 1 ? 'stop' : 'stops'} &rarr;</span>
+        </a>
+        <ul class="stops" role="list" aria-label={`${l.sec.label}: stops`}>
+          {l.hidden > 0 && (
+            <li class="stop earlier"><a href={href(`${l.sec.dir}/`)} data-cursor="link"><span class="dot" aria-hidden="true"></span><span class="lbl mono">+{l.hidden} earlier</span></a></li>
+          )}
+          {l.shown.map((p, i) => {
+            const last = i === l.shown.length - 1;
+            return (
+              <li class={`stop${last ? ' is-latest' : ''}`}>
+                <a href={href(p.path)} data-cursor="Read" data-wipe={p.colour} data-wipe-to={p.title} title={p.title}>
+                  {last && <Icon name="tram" class="stop-tram" />}
+                  <span class="dot" aria-hidden="true"></span>
+                  <span class="lbl mono"><i>No. {pad(p.no)}</i>{p.title}</span>
+                </a>
+              </li>
+            );
+          })}
+          {l.all.length === 0 && (
+            <li class="stop soon"><a href={href(`${l.sec.dir}/`)} data-cursor="link"><span class="dot" aria-hidden="true"></span><span class="lbl mono"><i>Next stop</i>{l.sec.empty}</span></a></li>
+          )}
+        </ul>
+      </li>
+    ))}
+  </ol>
+</section>

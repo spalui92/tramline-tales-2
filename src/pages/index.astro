@@ -5,16 +5,19 @@ import Highway from '../components/Highway.astro';
 import TaleList from '../components/TaleList.astro';
 import Frame from '../components/Frame.astro';
 import Heartbeat from '../components/Heartbeat.astro';
-import { cfg, tales, newestFirst, href, absolute, shortDate, pad } from '../lib/site';
+import RouteMap from '../components/RouteMap.astro';
+import { cfg, tales, newestFirst, depotFiles, notices, href, absolute, shortDate, pad } from '../lib/site';
 import { windows } from '../lib/kolkata';
 
 const latest = newestFirst[0];
 const recent = newestFirst.slice(0, 3);
+const latestDepot = depotFiles[depotFiles.length - 1];
+const latestNotice = notices[notices.length - 1];
 
 const jsonld = {
   '@context': 'https://schema.org', '@type': 'Blog', name: cfg.name, description: cfg.description,
   url: absolute(), author: { '@type': 'Person', name: cfg.author },
-  blogPost: tales.map((t) => ({ '@type': 'BlogPosting', headline: t.title, datePublished: t.date, description: t.summary, url: absolute(`tales/${t.slug}/`), author: { '@type': 'Person', name: cfg.author } })),
+  blogPost: tales.map((t) => ({ '@type': 'BlogPosting', headline: t.title, datePublished: t.date, description: t.summary, url: absolute(t.path), author: { '@type': 'Person', name: cfg.author } })),
 };
 ---
 <Base page="home" jsonld={jsonld}>
@@ -43,7 +46,7 @@ const jsonld = {
 
   <!-- THE SCOREBOARD: the newest tale, straight after the masthead -->
   <section class="scoreboard" style={`--c:${latest.colour}`} aria-label="Latest tale">
-    <a class="wrap sb" href={href(`tales/${latest.slug}/`)} data-cursor="Read" data-wipe={latest.colour} data-wipe-to={latest.title}>
+    <a class="wrap sb" href={href(latest.path)} data-cursor="Read" data-wipe={latest.colour} data-wipe-to={latest.title}>
       <span class="sb-meta mono" data-reveal><b>Latest · Tale No. {pad(latest.no)}</b><span>{shortDate(latest.date)}</span>{latest.tag && <span>{latest.tag}</span>}</span>
       <span class="sb-title" data-reveal>{latest.title}</span>
       <span class="sb-side" data-reveal>
@@ -51,6 +54,16 @@ const jsonld = {
         <span class="sb-cta mono">Board here <span aria-hidden="true">&rarr;</span></span>
       </span>
     </a>
+    <p class="wrap also mono" data-reveal>
+      <span class="al">Also running</span>
+      {latestDepot
+        ? <a href={href(latestDepot.path)} style={`--c:${latestDepot.colour}`} data-cursor="Read" data-wipe={latestDepot.colour} data-wipe-to={latestDepot.title}><b>Depot File No. {pad(latestDepot.no)}</b> {latestDepot.title} <span aria-hidden="true">&rarr;</span></a>
+        : <a href={href('depot/')} style="--c:#f6c531" data-cursor="link"><b>Depot Files</b> first teardown soon <span aria-hidden="true">&rarr;</span></a>}
+      <span class="sep" aria-hidden="true">·</span>
+      {latestNotice
+        ? <a href={href(latestNotice.path)} style={`--c:${latestNotice.colour}`} data-cursor="Read" data-wipe={latestNotice.colour} data-wipe-to={latestNotice.title}><b>Notice No. {pad(latestNotice.no)}</b> {latestNotice.title} <span aria-hidden="true">&rarr;</span></a>
+        : <a href={href('notice/')} style="--c:#7fb0d8" data-cursor="link"><b>Notice Board</b> first notice soon <span aria-hidden="true">&rarr;</span></a>}
+    </p>
   </section>
 
   <!-- THE LATEST THREE TALES -->
@@ -66,6 +79,9 @@ const jsonld = {
       <span class="mono count">{pad(tales.length)} {tales.length === 1 ? 'tale' : 'tales'}</span>
     </a>
   </section>
+
+  <!-- THE ROUTE MAP: the two branch lines, one stop for every piece -->
+  <RouteMap />
 
   <!-- ABOUT THE DIARY, AND THE DIARY AT A GLANCE -->
   <section class="section wrap about" id="about" aria-labelledby="about-title">

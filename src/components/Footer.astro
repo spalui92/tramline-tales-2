@@ -32,7 +32,7 @@ const showArchiveCard = still.length < 4;
         <ul class="still-cards" role="list">
           {still.map((t) => (
             <li style={`--c:${t.colour}`}>
-              <a href={href(`tales/${t.slug}/`)} data-cursor="Read" data-wipe={t.colour} data-wipe-to={t.title}>
+              <a href={href(t.path)} data-cursor="Read" data-wipe={t.colour} data-wipe-to={t.title}>
                 <span class="mono no">No. {pad(t.no)} · {shortDate(t.date)}</span>
                 <span class="t">{t.title}</span>
                 <span class="mono tag">{t.tag ? `${t.tag} · ` : ''}{t.minutes} min</span>

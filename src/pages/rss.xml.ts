@@ -1,13 +1,13 @@
-import { cfg, newestFirst, absolute } from '../lib/site';
+import { cfg, piecesNewestFirst, absolute } from '../lib/site';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export function GET() {
-  const items = newestFirst.map((t) => `
+  const items = piecesNewestFirst.map((t) => `
     <item>
       <title>${esc(t.title)}</title>
-      <link>${absolute(`tales/${t.slug}/`)}</link>
-      <guid>${absolute(`tales/${t.slug}/`)}</guid>
+      <link>${absolute(t.path)}</link>
+      <guid>${absolute(t.path)}</guid>
       <pubDate>${new Date(t.date + 'T09:00:00+05:30').toUTCString()}</pubDate>
       <description>${esc(t.summary)}</description>
     </item>`).join('');

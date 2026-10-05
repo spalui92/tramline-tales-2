@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
 import Footer from '../components/Footer.astro';
-import { cfg, href, absolute, tales, pad } from '../lib/site';
+import { cfg, SECTIONS, KINDS, href, absolute, tales, byKind, pad } from '../lib/site';
 
 interface Props {
   title?: string;
@@ -67,8 +67,12 @@ const favicon = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www
     <Icon name="tram" class="brand-tram" /><span class="stack"><span class="w1">Tramline</span><span class="w2">Tales</span></span>
   </a>
   <nav class="nav mono" aria-label="Main">
-    <a href={href('tales/')} data-cursor="link">Tales ({pad(tales.length)})</a>
-    <a href={href('#about')} data-cursor="link">About</a>
+    {KINDS.map((k) => (
+      <a href={href(`${SECTIONS[k].dir}/`)} data-cursor="link" data-kind={k} aria-current={page === 'archive' && Astro.url.pathname.includes(`/${SECTIONS[k].dir}/`) ? 'page' : undefined}>
+        <span class="long">{SECTIONS[k].label}</span><span class="short">{SECTIONS[k].short}</span> <span class="cnt">({pad(byKind(k).length)})</span>
+      </a>
+    ))}
+    <a class="about-link" href={href('#about')} data-cursor="link">About</a>
     <span class="clock" data-clock>{cfg.stampPlace}</span>
   </nav>
 </header>

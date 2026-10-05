@@ -3,21 +3,21 @@
 // postcard (shown inline on phones, following the pointer on desktop).
 import { Image } from 'astro:assets';
 import Clip from './Clip.astro';
-import { href, shortDate, pad, type Tale } from '../lib/site';
+import { SECTIONS, href, shortDate, pad, type Tale } from '../lib/site';
 
-interface Props { items: Tale[] }
-const { items } = Astro.props;
+interface Props { items: Tale[]; showKind?: boolean }
+const { items, showKind = false } = Astro.props;
 const lean = [-2.2, 1.8, -1.2, 2.4];
 const fit = (w: number, list: number[]) => { const ok = list.filter((x) => x <= w); return ok.length ? ok : [w]; };
 ---
 <ol class="tale-list">
   {items.map((t, i) => (
     <li class="tale-row" style={`--c:${t.colour}`} data-row={t.slug} data-reveal>
-      <a href={href(`tales/${t.slug}/`)} data-cursor="Read" data-wipe={t.colour} data-wipe-to={t.title}>
+      <a href={href(t.path)} data-cursor="Read" data-wipe={t.colour} data-wipe-to={t.title}>
         {t.cover && (
           <span class="thumb"><span class="pinned" style={`--r:${lean[i % lean.length]}deg`}><Clip /><Image src={t.cover.image} alt="" widths={fit(t.cover.image.width, [480, 900])} sizes="86vw" loading="lazy" /></span></span>
         )}
-        <span class="no mono">No. {pad(t.no)}</span>
+        <span class="no mono">{showKind ? `${SECTIONS[t.kind].singular} ` : ''}No. {pad(t.no)}</span>
         <span class="t">{t.title}</span>
         <span class="tag mono">{t.tag} · {t.minutes} min</span>
         <span class="d mono"><time datetime={t.date}>{shortDate(t.date)}</time></span>
