@@ -54,6 +54,15 @@ const jsonld = {
         <span class="sb-cta mono">Board here <span aria-hidden="true">&rarr;</span></span>
       </span>
     </a>
+    <div class="zip-rule" aria-hidden="true" data-zip-rule>
+      <span class="zr-teeth"></span>
+      <svg class="zr-pull" viewBox="0 0 52 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+        <path d="M2 5v14l14-2V7z" fill="currentColor" fill-opacity="0.18" />
+        <path d="M16 9h6M16 15h6" />
+        <rect x="22" y="6" width="28" height="12" rx="6" fill="currentColor" fill-opacity="0.12" />
+        <rect x="27" y="9.5" width="12" height="5" rx="2.5" />
+      </svg>
+    </div>
     <p class="wrap also mono" data-reveal>
       <span class="al">Also running</span>
       {latestDepot
@@ -117,3 +126,15 @@ const jsonld = {
     </ul>
   </section>
 </Base>
+
+<script>
+  // The zipper zips across the page the first time it scrolls into view (skipped for reduced motion).
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-zip-rule]').forEach((z) => {
+      z.classList.add('pre');
+      new IntersectionObserver((entries, io) => {
+        entries.forEach((e) => { if (e.isIntersecting) { z.classList.remove('pre'); io.disconnect(); } });
+      }, { threshold: 0.6 }).observe(z);
+    });
+  }
+</script>

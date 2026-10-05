@@ -7,7 +7,7 @@
 @import '@fontsource/nanum-pen-script/latin-400.css';
 @import '@fontsource/special-elite/latin-400.css';
 @import '@fontsource/imperial-script/latin-400.css';
-@import '@fontsource/galada/bengali-400.css';
+@import '@fontsource/noto-serif-bengali/bengali-400.css';
 @import '@fontsource/tiro-devanagari-hindi/devanagari-400.css';
 @import '@fontsource/tiro-devanagari-hindi/devanagari-400-italic.css';
 @import 'lenis/dist/lenis.css';
@@ -31,7 +31,7 @@
   --f-body: 'Newsreader Variable', Georgia, serif;
   --f-mono: 'Courier Prime', 'Courier New', monospace;
   --f-hand: 'Nanum Pen Script', 'Segoe Print', cursive;
-  --f-bn: 'Galada', 'Noto Sans Bengali', sans-serif;
+  --f-bn: 'Noto Serif Bengali', serif;
 
   --gutter: clamp(16px, 2.6vw, 40px);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -192,8 +192,8 @@ html.js.arriving .wipe { visibility: visible; }
 .hero-title .l1, .hero-title .l2 { display: block; }
 .hero-title .l2 { font-style: italic; color: var(--accent); }
 .kicker { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 14px; margin: clamp(12px, 1.6vh, 18px) 0 0; line-height: 1.25; }
-/* Galada: hand-lettered Bengali, like an old Kolkata signboard */
-.kicker .bn { font-family: var(--f-bn); font-size: clamp(18px, 1.45vw, 22px); line-height: 1.2; color: var(--paper); }
+/* Upright, regular-weight Bengali (no italics, no bold) */
+.kicker .bn { font-family: var(--f-bn); font-size: clamp(18px, 1.45vw, 22px); line-height: 1.2; color: var(--paper); font-style: normal; font-weight: 400; }
 .kicker .sep { color: var(--accent); }
 .kicker .en { font-family: var(--f-mono); font-size: clamp(11px, 0.9vw, 13px); letter-spacing: 0.22em; text-transform: uppercase; color: var(--paper-dim); }
 
@@ -553,37 +553,63 @@ html.reduced .board .track { transform: none !important; }
 @media (hover: hover) { .tabs a:not(.on):hover { color: var(--paper); border-color: var(--paper); } }
 .archive-empty { color: var(--muted); border-top: 1px solid var(--line); padding-block: 32px 0; margin: 0; }
 
-/* the route map */
+/* the route map. Every class here starts with rm- so it can never touch the footer board or anything else */
 .routes { padding-top: clamp(40px, 5vw, 80px); padding-bottom: clamp(40px, 5vw, 80px); }
 .routes-head h2 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: clamp(40px, 5vw, 80px); line-height: 0.92; letter-spacing: -0.02em; }
 .routes-head h2 em { color: var(--accent); }
 .routes-head p { max-width: 58ch; margin: 18px 0 0; color: var(--paper-dim); font-size: clamp(16px, 1.2vw, 19px); line-height: 1.55; text-wrap: pretty; }
-.lines { list-style: none; margin: clamp(28px, 3.4vw, 52px) 0 0; padding: 0; border-top: 1px solid var(--line); }
-.line { --c: var(--accent); display: grid; grid-template-columns: minmax(150px, 230px) minmax(0, 1fr); align-items: center; gap: 14px clamp(20px, 3vw, 48px); padding-block: clamp(22px, 2.6vw, 36px); border-bottom: 1px solid var(--line); }
-.line-name { display: flex; flex-direction: column; gap: 6px; }
-.line-name .ln { color: var(--c); }
-.line-name b { font-family: var(--f-display); font-weight: 400; font-size: clamp(30px, 3vw, 46px); line-height: 0.95; letter-spacing: -0.02em; transition: color 0.4s; }
-.line-name .lc { color: var(--muted); }
-@media (hover: hover) { .line-name:hover b { color: var(--c); } }
-.stops { list-style: none; margin: 0; padding: 0; position: relative; display: flex; align-items: flex-start; gap: 0; }
-.stops::before { content: ''; position: absolute; left: 0; right: 0; top: 11px; height: 2px; background: var(--c); }
-.line.is-empty .stops::before { background: none; border-top: 2px dashed var(--c); height: 0; opacity: 0.7; }
-.stop { position: relative; flex: 1 1 0; min-width: 0; max-width: 190px; }
-.stop a { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding-right: 12px; }
-.stop .dot { position: relative; z-index: 1; width: 14px; height: 14px; margin: 5px 0 0; border-radius: 50%; background: var(--ink); border: 2px solid var(--c); transition: background 0.3s, transform 0.4s var(--ease-out); }
-.stop.is-latest .dot { background: var(--c); }
-.stop .lbl { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; font-size: 11.5px; line-height: 1.35; letter-spacing: 0.04em; text-transform: none; color: var(--paper-dim); transition: color 0.3s; }
-.stop .lbl i { display: block; font-style: normal; text-transform: uppercase; color: var(--c); margin-bottom: 2px; }
-.stop.soon { max-width: none; }
-.stop.earlier { flex: 0 0 auto; }
-.stop.earlier .dot { background: transparent; border-style: dashed; }
-.stop.earlier a { padding-right: 18px; }
-.stop-tram { position: absolute; z-index: 2; left: -4px; top: -23px; width: 34px; color: var(--c); }
-@media (hover: hover) { .stop a:hover .dot { background: var(--c); transform: scale(1.25); } .stop a:hover .lbl { color: var(--paper); } }
-@media (max-width: 760px) {
-  .line { grid-template-columns: 1fr; }
-  .stops { margin-top: 22px; }
-  .stop:not(.is-latest):not(.soon):not(.earlier):not(:nth-last-child(2)):not(:nth-last-child(3)) { display: none; }
-}
+.rm-lines { list-style: none; margin: clamp(28px, 3.4vw, 52px) 0 0; padding: 0; border-top: 1px solid var(--line); }
+.rm-line { --c: var(--accent); position: relative; display: grid; grid-template-columns: minmax(150px, 230px) minmax(0, 1fr); align-items: center; gap: 14px clamp(20px, 3vw, 48px); padding-block: clamp(22px, 2.6vw, 36px); border-bottom: 1px solid var(--line); }
+.rm-name { display: flex; flex-direction: column; gap: 6px; }
+.rm-ln { color: var(--c); }
+.rm-name b { font-family: var(--f-display); font-weight: 400; font-size: clamp(30px, 3vw, 46px); line-height: 0.95; letter-spacing: -0.02em; transition: color 0.4s; }
+.rm-lc { color: var(--muted); }
+@media (hover: hover) { .rm-name:hover b { color: var(--c); } }
+
+/* the window onto a line's stops: overflow hidden, swipe or step through it */
+.rm-scroll { container-type: inline-size; overflow-x: auto; overflow-y: hidden; padding-top: 28px; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+.rm-scroll::-webkit-scrollbar { display: none; }
+.rm-scroll:focus-visible { outline: 1px dashed var(--c); outline-offset: 4px; }
+.rm-scroll.can-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 52px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 52px), transparent); }
+.rm-scroll.can-l { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 52px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 52px), transparent); }
+.rm-scroll.can-l.can-r { -webkit-mask-image: linear-gradient(to right, transparent, #000 52px, #000 calc(100% - 52px), transparent); mask-image: linear-gradient(to right, transparent, #000 52px, #000 calc(100% - 52px), transparent); }
+.rm-stops { list-style: none; margin: 0; padding: 0; position: relative; display: flex; align-items: flex-start; width: max-content; min-width: 100%; }
+.rm-stops::before { content: ''; position: absolute; left: 0; right: 0; top: 11px; height: 2px; background: var(--c); }
+.rm-line.is-empty .rm-stops::before { background: none; border-top: 2px dashed var(--c); height: 0; opacity: 0.7; }
+/* three stops fill the window exactly; a fourth and beyond scroll in */
+.rm-stop { position: relative; flex: 0 0 min(190px, 33.333cqw); min-width: 0; scroll-snap-align: start; }
+.rm-stop a { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding-right: 14px; }
+.rm-dot { position: relative; z-index: 1; width: 14px; height: 14px; margin: 5px 0 0; border-radius: 50%; background: var(--ink); border: 2px solid var(--c); transition: background 0.3s, transform 0.4s var(--ease-out); }
+.rm-stop.is-newest .rm-dot { background: var(--c); }
+.rm-lbl { display: flex; flex-direction: column; gap: 3px; width: 100%; font-size: 11.5px; line-height: 1.35; letter-spacing: 0.04em; text-transform: none; }
+.rm-no { text-transform: uppercase; color: var(--c); }
+.rm-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; color: var(--paper-dim); transition: color 0.3s; overflow-wrap: anywhere; }
+.rm-soon { flex-basis: 100%; }
+.rm-earlier { flex: 0 0 min(150px, 33.333cqw); }
+.rm-earlier .rm-dot { background: transparent; border-style: dashed; }
+.rm-tram { position: absolute; z-index: 2; left: -4px; top: -23px; width: 34px; color: var(--c); }
+@media (hover: hover) { .rm-stop a:hover .rm-dot { background: var(--c); transform: scale(1.25); } .rm-stop a:hover .rm-title { color: var(--paper); } }
+
+/* arrows: only shown when a line has more stops than the window holds */
+.rm-pager { position: absolute; top: clamp(18px, 2.2vw, 30px); right: 0; display: flex; gap: 8px; }
+.rm-pager[hidden] { display: none; }
+.rm-pager button { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--c); border-radius: 50%; background: transparent; color: var(--c); cursor: pointer; transition: background 0.3s, color 0.3s, opacity 0.3s; }
+.rm-pager button svg { width: 18px; height: 18px; }
+.rm-pager button:disabled { opacity: 0.28; cursor: default; }
+@media (hover: hover) { .rm-pager button:not(:disabled):hover { background: var(--c); color: var(--ink); } }
+@media (max-width: 760px) { .rm-line { grid-template-columns: 1fr; } }
+
+/* a zipper rule between the scoreboard and "Also running": it zips across as you arrive */
+@property --zh { syntax: '<number>'; inherits: true; initial-value: 1; }
+.zip-rule { --brass: #c9a24a; --zh: 1; position: relative; height: 26px; margin: clamp(2px, 0.6vw, 8px) auto clamp(14px, 1.8vw, 22px); transition: --zh 1.4s var(--ease-out); }
+.zip-rule.pre { --zh: 0; }
+.zip-rule .zr-teeth { position: absolute; left: var(--gutter); right: var(--gutter); top: 4px; height: 18px; border-radius: 2px;
+  background:
+    repeating-linear-gradient(to right, var(--brass) 0 3px, transparent 3px 7px) 0 3px / 100% 6px no-repeat,
+    repeating-linear-gradient(to right, transparent 0 3.5px, var(--brass) 3.5px 6.5px, transparent 6.5px 7px) 0 9px / 100% 6px no-repeat,
+    linear-gradient(#211d17, #211d17);
+  clip-path: inset(0 calc((1 - var(--zh)) * 100%) 0 0); }
+.zip-rule .zr-pull { position: absolute; top: 1px; width: 52px; height: 24px; max-width: none; color: var(--brass); left: calc(var(--gutter) + var(--zh) * (100% - 2 * var(--gutter) - 52px)); }
+@media (prefers-reduced-motion: reduce) { .zip-rule { transition: none; } }
 
 /* a depot file or notice reads exactly like a tale; only its colour and number set it apart */
