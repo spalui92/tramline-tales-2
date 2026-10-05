@@ -340,13 +340,18 @@ html.js.motion .beat .caret { display: block; animation: caret 0.9s steps(1) inf
 .win-head h2 em { color: var(--accent); }
 .win-head h2 .sub { display: block; margin-top: 0.3em; font-size: max(0.36em, 17px); font-style: italic; letter-spacing: 0; color: var(--paper-dim); }
 /* the intro sits under the heading, on a yellow accent bar; its second line starts after a blank row */
-.win-intro { max-width: 58ch; border-left: 2px solid var(--accent); padding: 2px 0 2px clamp(14px, 1.4vw, 20px); color: var(--paper-dim); font-size: clamp(16px, 1.15vw, 18px); line-height: 1.55; }
+/* the bar is a little stretch of NH: two white road edges with the dashed yellow centre line between them */
+.win-intro { --road: 10px; max-width: 58ch; padding: 2px 0 2px calc(var(--road) + clamp(14px, 1.4vw, 20px));
+  background:
+    linear-gradient(rgba(236, 228, 210, 0.55), rgba(236, 228, 210, 0.55)) 0 0 / 1px 100% no-repeat,
+    linear-gradient(rgba(236, 228, 210, 0.55), rgba(236, 228, 210, 0.55)) calc(var(--road) - 1px) 0 / 1px 100% no-repeat,
+    repeating-linear-gradient(to bottom, var(--taxi) 0 9px, transparent 9px 16px) calc(var(--road) / 2 - 1px) 0 / 2px 100% no-repeat; color: var(--paper-dim); font-size: clamp(16px, 1.15vw, 18px); line-height: 1.55; }
 .win-intro p { margin: 0; }
 .win-intro p + p { margin-top: 1.55em; color: var(--paper); }
-/* desktop: the intro stands beside the heading on the right, right-aligned, its accent bar on the right edge */
+/* desktop: the intro stands beside the heading on the right, right-aligned, the road bar before it */
 @media (min-width: 761px) {
   .win-head { flex-direction: row; justify-content: space-between; align-items: end; gap: 40px; }
-  .win-intro { max-width: 46ch; text-align: right; border-left: 0; border-right: 2px solid var(--accent); padding: 2px clamp(14px, 1.4vw, 20px) 2px 0; }
+  .win-intro { max-width: 50ch; text-align: right; }
 }
 .win-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(12px, 1.4vw, 22px); align-items: start; }
 /* every other window sits a little lower, like a row of windows seen from a passing tram */
