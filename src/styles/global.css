@@ -518,3 +518,72 @@ html.reduced .board .track { transform: none !important; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
 }
+
+/* =====================================================================
+   Three lines: Tales, Depot Files, Notice Board
+   ===================================================================== */
+
+/* navbar: three line links and About; counts and long names fold away on phones */
+.nav .short { display: none; }
+.nav .cnt { opacity: 0.6; }
+.nav a[aria-current='page']::after { transform: scaleX(1); transform-origin: left; }
+@media (max-width: 860px) { .nav .cnt { display: none; } }
+@media (max-width: 640px) {
+  .nav { gap: 13px; font-size: 11.5px; letter-spacing: 0.03em; }
+  .nav .long { display: none; }
+  .nav .short { display: inline; }
+  .nav .about-link { display: none; }
+}
+@media (max-width: 380px) { .brand .stack { display: none; } }
+
+/* "also running": a single line under the scoreboard, one link per branch line */
+.also { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin: 0 auto; padding-block: 0 clamp(20px, 2.4vw, 30px); color: var(--muted); font-size: 12px; }
+.also .al { color: var(--paper-dim); }
+.also a { color: var(--paper-dim); transition: color 0.3s; }
+.also a b { color: var(--c); font-weight: 400; }
+.also .sep { opacity: 0.5; }
+@media (hover: hover) { .also a:hover { color: var(--c); } }
+@media (max-width: 760px) { .also .sep { display: none; } .also a { flex-basis: 100%; } }
+
+/* archive filter tabs */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px 10px; margin-top: clamp(26px, 3vw, 40px); }
+.tabs a { position: relative; padding: 9px 16px 8px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--paper-dim); transition: color 0.3s, border-color 0.3s, background 0.3s; }
+.tabs a sup { margin-left: 6px; font-size: 0.72em; opacity: 0.65; vertical-align: top; }
+.tabs a.on { color: var(--ink); background: var(--accent); border-color: var(--accent); }
+@media (hover: hover) { .tabs a:not(.on):hover { color: var(--paper); border-color: var(--paper); } }
+.archive-empty { color: var(--muted); border-top: 1px solid var(--line); padding-block: 32px 0; margin: 0; }
+
+/* the route map */
+.routes { padding-top: clamp(40px, 5vw, 80px); padding-bottom: clamp(40px, 5vw, 80px); }
+.routes-head h2 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: clamp(40px, 5vw, 80px); line-height: 0.92; letter-spacing: -0.02em; }
+.routes-head h2 em { color: var(--accent); }
+.routes-head p { max-width: 58ch; margin: 18px 0 0; color: var(--paper-dim); font-size: clamp(16px, 1.2vw, 19px); line-height: 1.55; text-wrap: pretty; }
+.lines { list-style: none; margin: clamp(28px, 3.4vw, 52px) 0 0; padding: 0; border-top: 1px solid var(--line); }
+.line { --c: var(--accent); display: grid; grid-template-columns: minmax(150px, 230px) minmax(0, 1fr); align-items: center; gap: 14px clamp(20px, 3vw, 48px); padding-block: clamp(22px, 2.6vw, 36px); border-bottom: 1px solid var(--line); }
+.line-name { display: flex; flex-direction: column; gap: 6px; }
+.line-name .ln { color: var(--c); }
+.line-name b { font-family: var(--f-display); font-weight: 400; font-size: clamp(30px, 3vw, 46px); line-height: 0.95; letter-spacing: -0.02em; transition: color 0.4s; }
+.line-name .lc { color: var(--muted); }
+@media (hover: hover) { .line-name:hover b { color: var(--c); } }
+.stops { list-style: none; margin: 0; padding: 0; position: relative; display: flex; align-items: flex-start; gap: 0; }
+.stops::before { content: ''; position: absolute; left: 0; right: 0; top: 11px; height: 2px; background: var(--c); }
+.line.is-empty .stops::before { background: none; border-top: 2px dashed var(--c); height: 0; opacity: 0.7; }
+.stop { position: relative; flex: 1 1 0; min-width: 0; max-width: 190px; }
+.stop a { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding-right: 12px; }
+.stop .dot { position: relative; z-index: 1; width: 14px; height: 14px; margin: 5px 0 0; border-radius: 50%; background: var(--ink); border: 2px solid var(--c); transition: background 0.3s, transform 0.4s var(--ease-out); }
+.stop.is-latest .dot { background: var(--c); }
+.stop .lbl { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; font-size: 11.5px; line-height: 1.35; letter-spacing: 0.04em; text-transform: none; color: var(--paper-dim); transition: color 0.3s; }
+.stop .lbl i { display: block; font-style: normal; text-transform: uppercase; color: var(--c); margin-bottom: 2px; }
+.stop.soon { max-width: none; }
+.stop.earlier { flex: 0 0 auto; }
+.stop.earlier .dot { background: transparent; border-style: dashed; }
+.stop.earlier a { padding-right: 18px; }
+.stop-tram { position: absolute; z-index: 2; left: -4px; top: -23px; width: 34px; color: var(--c); }
+@media (hover: hover) { .stop a:hover .dot { background: var(--c); transform: scale(1.25); } .stop a:hover .lbl { color: var(--paper); } }
+@media (max-width: 760px) {
+  .line { grid-template-columns: 1fr; }
+  .stops { margin-top: 22px; }
+  .stop:not(.is-latest):not(.soon):not(.earlier):not(:nth-last-child(2)):not(:nth-last-child(3)) { display: none; }
+}
+
+/* a depot file or notice reads exactly like a tale; only its colour and number set it apart */

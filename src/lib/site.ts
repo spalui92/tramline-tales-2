@@ -33,7 +33,33 @@ export type Block =
   | { t: 'list'; items: { mark: string; x: string }[] }
   | { t: 'img'; caption: string; src: string; image: ImageMetadata };
 
+// The diary has three lines. Set `kind:` in an article's header to choose one;
+// leave it out and the article is a tale, exactly as before.
+export type Kind = 'tale' | 'depot' | 'notice';
+export const KINDS: Kind[] = ['tale', 'depot', 'notice'];
+export const SECTIONS: Record<Kind, {
+  dir: string; label: string; short: string; singular: string; defaultColour: string;
+  blurb: string; hail: string; first: string; empty: string;
+}> = {
+  tale: {
+    dir: 'tales', label: 'Tales', short: 'Tales', singular: 'Tale', defaultColour: '',
+    blurb: 'Essays on marketing, brands and media. The main line.',
+    hail: 'Hail the next tale', first: 'Back to the first tale', empty: 'The first tale is being typed.',
+  },
+  depot: {
+    dir: 'depot', label: 'Depot Files', short: 'Depot', singular: 'Depot File', defaultColour: 'taxi',
+    blurb: 'Campaign teardowns. Where a tram is taken apart to see how it runs.',
+    hail: 'Open the next file', first: 'Back to the first file', empty: 'The first depot file is being opened up.',
+  },
+  notice: {
+    dir: 'notice', label: 'Notice Board', short: 'Notices', singular: 'Notice', defaultColour: 'ganga',
+    blurb: 'Internal-communication notices, pinned up the way a company would.',
+    hail: 'Read the next notice', first: 'Back to the first notice', empty: 'The first notice is being pinned up.',
+  },
+};
+
 export type Tale = {
+  kind: Kind; path: string;
   slug: string; no: number; title: string; date: string; tag: string; note: string;
   summary: string; colour: string; colourName: string; words: number; minutes: number;
   cover?: { caption: string; image: ImageMetadata; src: string };
@@ -108,8 +134,10 @@ function parse(file: string, text: string) {
   let summary = meta.summary || firstP.x;
   if (summary.length > 160 && !meta.summary) summary = summary.slice(0, 157).replace(/\s+\S*$/, '') + '...';
   const coverBlock = blocks.find((b) => b.t === 'img') as Extract<Block, { t: 'img' }> | undefined;
+  const kind = (meta.kind || 'tale').toLowerCase() as Kind;
+  if (!KINDS.includes(kind)) throw new Error(`${name}: kind must be one of ${KINDS.join(', ')} (got '${meta.kind}')`);
   return {
-    slug: name.replace(/\.md$/, ''), title: meta.title, date: meta.date, tag: meta.tag || '',
+    kind, slug: name.replace(/\.md$/, ''), title: meta.title, date: meta.date, tag: meta.tag || '',
     note: meta.note || '', summary, colourKey: (meta.colour || meta.color || '').toLowerCase(), words,
     cover: coverBlock && { caption: coverBlock.caption, image: coverBlock.image, src: coverBlock.src },
     body: blocks,
@@ -119,14 +147,29 @@ function parse(file: string, text: string) {
 const parsed = Object.entries(rawArticles).map(([file, text]) => parse(file, text));
 parsed.sort((a, b) => (a.date + a.slug).localeCompare(b.date + b.slug));
 
-/** Oldest first. Tale No. 1 is the first ever published. */
-export const tales: Tale[] = parsed.map((a, i) => {
-  const key = COLOURS[a.colourKey] ? a.colourKey : ROTATION[i % ROTATION.length];
+/** Oldest first within each line. Tale No. 1, Depot File No. 1 and Notice No. 1 each start their own count. */
+const counters: Record<Kind, number> = { tale: 0, depot: 0, notice: 0 };
+const everything: Tale[] = parsed.map((a) => {
+  const sec = SECTIONS[a.kind];
+  const i = counters[a.kind]++;
+  // tales take turns through the city's colours; the other lines have a colour of their own
+  const fallback = a.kind === 'tale' ? ROTATION[i % ROTATION.length] : sec.defaultColour;
+  const key = COLOURS[a.colourKey] ? a.colourKey : fallback;
   return {
-    ...a, no: i + 1, colour: COLOURS[key].hex, colourName: COLOURS[key].label,
+    ...a, path: `${sec.dir}/${a.slug}/`, no: i + 1, colour: COLOURS[key].hex, colourName: COLOURS[key].label,
     minutes: Math.max(1, Math.round(a.words / 220)),
   };
 });
+
+/** Every piece on every line, oldest first, and newest first. */
+export const pieces: Tale[] = everything;
+export const piecesNewestFirst: Tale[] = [...everything].reverse();
+/** One line at a time, oldest first. */
+export const byKind = (k: Kind): Tale[] => everything.filter((p) => p.kind === k);
+export const tales: Tale[] = byKind('tale');
+export const depotFiles: Tale[] = byKind('depot');
+export const notices: Tale[] = byKind('notice');
+/** Tales only, newest first (the home page, footer and loader all mean tales). */
 export const newestFirst = [...tales].reverse();
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
