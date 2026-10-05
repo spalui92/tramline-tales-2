@@ -4,12 +4,22 @@ import Frame from './Frame.astro';
 import { cfg, href, tales, newestFirst, pad, shortDate } from '../lib/site';
 import { sides } from '../lib/kolkata';
 const year = new Date().getFullYear();
+// the destination board: five Kolkata stops, running in a loop
+const stops = ['Howrah', 'Esplanade', 'College Street', 'Park Street', 'Kalighat'];
 // the four newest tales; while there are fewer than four, the last card points to the archive
 const still = newestFirst.slice(0, 4);
 const showArchiveCard = still.length < 4;
 ---
 <footer class="site-footer">
-  <div class="laalpaar" aria-hidden="true"></div>
+  <div class="board" aria-hidden="true" data-board>
+    <div class="track">
+      {[0, 1, 2].map(() => (
+        <div class="seq">
+          {stops.map((s, i) => (<><span class={i === 0 ? 'stop hl' : 'stop'}>{s}</span><Icon name="tram" /></>))}
+        </div>
+      ))}
+    </div>
+  </div>
 
   <section class="wrap still" aria-labelledby="still-title">
     <div class="still-head">
