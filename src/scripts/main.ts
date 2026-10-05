@@ -225,7 +225,8 @@ function heartbeat() {
     shown = n;
     keys.forEach((k, i) => k.classList.toggle('on', i < n));
     const at = keys[Math.max(0, n - 1)].getBoundingClientRect(), box = text.getBoundingClientRect();
-    caret.style.transform = `translate(${(n ? at.right : at.left) - box.left}px, ${at.top - box.top + at.height * 0.05}px)`;
+    // sits just after the last letter typed, on its baseline
+    caret.style.transform = `translate(${(n ? at.right : at.left) - box.left + 2}px, ${at.bottom - box.top - at.height * 0.2}px)`;
   };
   const ride = (q: number) => {
     const pt = wire.getPointAtLength(length * q);
